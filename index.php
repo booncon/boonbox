@@ -135,6 +135,8 @@
 		            	$adminurl = sprintf( '%1$s/user', $siteroot );
 		            else if ( is_dir( $file . '/docroot/sites/all' ) )
 		            	$adminurl = sprintf( '%1$s/user', $siteroot );
+		            else if ( is_dir( $file . '/web/manager' ) )
+		            	$adminurl = sprintf( '%1$s/manager', $siteroot );
 
 								// If the user has defined an adminurl for the project we'll use that instead
 		            if (isset($siteoptions[$project]) &&  is_array( $siteoptions[$project] ) && array_key_exists( 'adminurl', $siteoptions[$project] ) )
