@@ -185,6 +185,8 @@
 
 			var showFacts = function () {
 				$('#db-info').hide();
+				$('#githubInput, #projectName').prop('readonly', true);
+				$('#closeModalBtn').prop('disabled', true);
 				factinator = window.setInterval(function () {
 					(function() {
 			        var scriptTag = document.createElement('script');
@@ -196,6 +198,8 @@
 			};
 
 			var stopFacts = function () {
+				$('#githubInput, #projectName').prop('readonly', false);
+				$('#closeModalBtn').prop('disabled', false);
 				$('#db-info').show();
 				clearInterval(factinator);
 				$('#number-fact').html('');
@@ -388,7 +392,7 @@
 						</div>		        
 		      </div>
 		      <div class="modal-footer">
-		        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>		        
+		        <button id="closeModalBtn" type="button" class="btn btn-default" data-dismiss="modal">Close</button>		        
 		      </div>
 		    </div>
 		  </div>
