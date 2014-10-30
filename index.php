@@ -7,9 +7,108 @@
 		<title><?php echo $name; ?></title>
 		<meta name="viewport" content="width=device-width">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+		<link rel="stylesheet" href="http://css-spinners.com/css/spinner/throbber.css" type="text/css">
 		<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600' rel='stylesheet' type='text/css'>
 		<style>
+			/* Thanks a lot http://css-spinners.com/css/spinner/throbber.css */
+			@-webkit-keyframes throbber {
+			  0% {
+			    background: #dde2e7;
+			  }
+
+			  10% {
+			    background: #6b9dc8;
+			  }
+
+			  40% {
+			    background: #dde2e7;
+			  }
+			}
+
+			@-moz-keyframes throbber {
+			  0% {
+			    background: #dde2e7;
+			  }
+
+			  10% {
+			    background: #6b9dc8;
+			  }
+
+			  40% {
+			    background: #dde2e7;
+			  }
+			}
+
+			@-o-keyframes throbber {
+			  0% {
+			    background: #dde2e7;
+			  }
+
+			  10% {
+			    background: #6b9dc8;
+			  }
+
+			  40% {
+			    background: #dde2e7;
+			  }
+			}
+
+			@keyframes throbber {
+			  0% {
+			    background: #dde2e7;
+			  }
+
+			  10% {
+			    background: #6b9dc8;
+			  }
+
+			  40% {
+			    background: #dde2e7;
+			  }
+			}
+
+			/* :not(:required) hides these rules from IE9 and below */
+			.throbber:not(:required) {
+			  -webkit-animation: throbber 2000ms 300ms infinite ease-out;
+			  -moz-animation: throbber 2000ms 300ms infinite ease-out;
+			  -ms-animation: throbber 2000ms 300ms infinite ease-out;
+			  -o-animation: throbber 2000ms 300ms infinite ease-out;
+			  animation: throbber 2000ms 300ms infinite ease-out;
+			  background: #dde2e7;
+			  display: inline-block;
+			  position: relative;
+			  text-indent: -9999px;
+			  width: 0.6em;
+			  height: 0.8em;
+			  margin: 0 1.2em;
+			}
+			.throbber:not(:required):before, .throbber:not(:required):after {
+			  background: #dde2e7;
+			  content: '\x200B';
+			  display: inline-block;
+			  width: 0.6em;
+			  height: 0.8em;
+			  position: absolute;
+			  top: 0;
+			}
+			.throbber:not(:required):before {
+			  -webkit-animation: throbber 2000ms 150ms infinite ease-out;
+			  -moz-animation: throbber 2000ms 150ms infinite ease-out;
+			  -ms-animation: throbber 2000ms 150ms infinite ease-out;
+			  -o-animation: throbber 2000ms 150ms infinite ease-out;
+			  animation: throbber 2000ms 150ms infinite ease-out;
+			  left: -1.2em;
+			}
+			.throbber:not(:required):after {
+			  -webkit-animation: throbber 2000ms 450ms infinite ease-out;
+			  -moz-animation: throbber 2000ms 450ms infinite ease-out;
+			  -ms-animation: throbber 2000ms 450ms infinite ease-out;
+			  -o-animation: throbber 2000ms 450ms infinite ease-out;
+			  animation: throbber 2000ms 450ms infinite ease-out;
+			  right: -1.2em;
+			}
 			body {
 				font-family: 'Open Sans', sans-serif;
 			}
@@ -38,6 +137,18 @@
 				background-color: #e24b70;
 				transition: all 0.3s;
 			}
+			.add-new.list-group-item {
+				border: none;
+				background: none;
+				padding-left: 0;
+			}
+			.add-new.list-group-item:hover {
+				background: none;
+				color: #e24b70;
+			}
+			.add-new.list-group-item:focus {
+				outline: none;
+			}	
 			.footer {
 				text-align: center;
 				margin-bottom: 20px;
@@ -58,6 +169,38 @@
 			}
 		</style>
 		<script>
+			var factinator;
+			var errors = ['Please enter a valid github repository.', 'Please enter a valid project name.'];
+
+			function showNumber(str) {
+        $('#number-fact').html(str + '<br>');
+    	}
+
+			var showAlert = function (type, message) {
+				var html = '<div id="addProjectAlert" class="alert alert-' + type + ' alert-dismissible" role="alert">';
+				  html += '<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>';
+				  html += '<span class="message">' + message + '</span></div>';
+				return html;
+			};
+
+			var showFacts = function () {
+				$('#db-info').hide();
+				factinator = window.setInterval(function () {
+					(function() {
+			        var scriptTag = document.createElement('script');
+			        scriptTag.async = true;
+			        scriptTag.src = "http://numbersapi.com/random?callback=showNumber";
+			        document.body.appendChild(scriptTag);
+			    })();
+				}, 6000);
+			};
+
+			var stopFacts = function () {
+				$('#db-info').show();
+				clearInterval(factinator);
+				$('#number-fact').html('');
+			};
+
 			$(document).ready(function () {
 				$('.admin-link').click(function (e) {
 					if (e.cmdKey || e.metaKey) {
@@ -66,6 +209,52 @@
 						window.location = $(this).data('link');
 					}
 					e.preventDefault();
+				});
+				$('.site-link.add-new, .nav-tabs a').click(function () {
+					$('#addProjectFormAlertWrap').html('');
+					$('#githubInput').val('');
+					$('#projectName').val('');
+				});
+				$( "#addProjectForm" ).submit(function( event ) {
+					$('#addProjectFormAlertWrap').html('');
+					if ($('#githubInput').val() !== '') {
+						showFacts();
+						var $btn = $("#addProject").button('loading');
+						$.ajax({
+						  type: "GET",
+						  url: "add.php",
+						  data: { url: $('#githubInput').val() }
+						}).success(function (response) {
+							console.log(response);
+					  	$('#addProjectFormAlertWrap').html(showAlert('success', '<strong>Success!</strong> You have added a new project.'));
+					    $btn.button('reset');
+					    $('#main-content-wrapper').load('index.php #main-content');
+					    $('#githubInput').val('');
+					    stopFacts();					    
+					  }).error(function (response) {
+					  	console.log(response);
+					  	$('#addProjectFormAlertWrap').html(showAlert('danger', '<strong>Error!</strong> ' + response.responseText));
+					    $btn.button('reset');
+					    stopFacts();
+					  });
+					} else {
+					  $('#addProjectFormAlertWrap').html(showAlert('danger', '<strong>Error!</strong> ' + errors[0]));
+					  stopFacts();
+					}
+				  event.preventDefault();
+				});
+				$( "#createProjectForm" ).submit(function( event ) {
+					$('#addProjectFormAlertWrap').html('');
+					showFacts();
+					if ($('#projectName').val() !== '') {
+						$('#addProjectFormAlertWrap').html(showAlert('success', "<strong>Success!</strong> Create the project:\ncompser create 'name';\nroots sass clone as 'name';\npull styles from git;"));
+						$('#projectName').val('');
+						stopFacts();
+					}	else {
+					  $('#addProjectFormAlertWrap').html(showAlert('danger', '<strong>Error!</strong> ' + errors[1]));
+					  stopFacts();
+					}
+				  event.preventDefault();
 				});
 			});
 		</script>
@@ -86,74 +275,123 @@
 				</div>				
 			</div>
 		</nav>
-		<div class="container">
-			<h1><?php echo $header; ?></h1><br>
-			<ul class="list-group list-unstyled row">
-				<?php
-					foreach ( $dir as $d ) {
-						$dirsplit = explode('/', $d);
-						$dirname = $dirsplit[count($dirsplit)-2];
+		<div id="main-content-wrapper">
+			<div id="main-content" class="container">
+				<h1><?php echo $header; ?></h1><br>
+				<ul class="list-group list-unstyled row">
+					<?php
+						foreach ( $dir as $d ) {
+							$dirsplit = explode('/', $d);
+							$dirname = $dirsplit[count($dirsplit)-2];
 
-						foreach( glob( $d ) as $file )  {
+							foreach( glob( $d ) as $file )  {
 
-							$project = basename($file);
+								$project = basename($file);
 
-							if ( in_array( $project, $hiddensites ) ) continue;
+								if ( in_array( $project, $hiddensites ) ) continue;
 
-							echo '<li class="col-sm-6 col-md-4 col-lg-3 site-item">';
+								echo '<li class="col-sm-6 col-md-4 col-lg-3 site-item">';
 
-							$siteroot = sprintf( 'http://%1$s.%2$s', $project, $tld );
+								$siteroot = sprintf( 'http://%1$s.%2$s', $project, $tld );
 
-		            // Display an icon for the site
-							$icon_output = NULL;
-							foreach( $icons as $icon ) {
-								if ( file_exists( $file . '/' . $rootfolder . '/' . $icon ) || file_exists( $file . '/docroot/' . $icon ) ) {
-									$icon_output = sprintf( 'style="background-image:url(%1$s/%2$s);"', $siteroot, $icon );
-									break;
-		            	} // if ( file_exists( $file . '/' . $icon ) )
+			            // Display an icon for the site
+								$icon_output = NULL;
+								foreach( $icons as $icon ) {
+									if ( file_exists( $file . '/' . $rootfolder . '/' . $icon ) || file_exists( $file . '/docroot/' . $icon ) ) {
+										$icon_output = sprintf( 'style="background-image:url(%1$s/%2$s);"', $siteroot, $icon );
+										break;
+			            	}
+			            }
 
-		            } // foreach( $icons as $icon )
-		            // echo $icon_output;
+			            // Display a link to the site
+			            $displayname = $project;
+			            if ( array_key_exists( $project, $siteoptions ) ) {
+			            	if ( is_array( $siteoptions[$project] ) )
+			            		$displayname = array_key_exists( 'displayname', $siteoptions[$project] ) ? $siteoptions[$project]['displayname'] : $project;
+			            	else
+			            		$displayname = $siteoptions[$project];
+			            }
+			            printf( '<a class="list-group-item site-link" href="%1$s" ' . $icon_output . '>%2$s', $siteroot, $displayname );
 
-		            // Display a link to the site
-		            $displayname = $project;
-		            if ( array_key_exists( $project, $siteoptions ) ) {
-		            	if ( is_array( $siteoptions[$project] ) )
-		            		$displayname = array_key_exists( 'displayname', $siteoptions[$project] ) ? $siteoptions[$project]['displayname'] : $project;
-		            	else
-		            		$displayname = $siteoptions[$project];
-		            }
-		            printf( '<a class="list-group-item site-link" href="%1$s" ' . $icon_output . '>%2$s', $siteroot, $displayname );
+									// Display an icon with a link to the admin area
+			            $adminurl = '';
+									// We'll start by checking if the site looks like it's a WordPress site
+			            if ( is_dir( $file . '/' . $rootfolder . '/wp/wp-admin' ) )
+			            	$adminurl = sprintf( '%1$s/admin', $siteroot );
+			            else if ( is_dir( $file . '/' . $rootfolder . '/sites/all' ) )
+			            	$adminurl = sprintf( '%1$s/user', $siteroot );
+			            else if ( is_dir( $file . '/docroot/sites/all' ) )
+			            	$adminurl = sprintf( '%1$s/user', $siteroot );
+			            else if ( is_dir( $file . '/' . $rootfolder . '/manager' ) )
+			            	$adminurl = sprintf( '%1$s/manager', $siteroot );
 
+									// If the user has defined an adminurl for the project we'll use that instead
+			            if (isset($siteoptions[$project]) &&  is_array( $siteoptions[$project] ) && array_key_exists( 'adminurl', $siteoptions[$project] ) )
+			            	$adminurl = $siteoptions[$project]['adminurl'];
 
-								// Display an icon with a link to the admin area
-		            $adminurl = '';
-								// We'll start by checking if the site looks like it's a WordPress site
-		            if ( is_dir( $file . '/' . $rootfolder . '/wp/wp-admin' ) )
-		            	$adminurl = sprintf( '%1$s/admin', $siteroot );
-		            else if ( is_dir( $file . '/' . $rootfolder . '/sites/all' ) )
-		            	$adminurl = sprintf( '%1$s/user', $siteroot );
-		            else if ( is_dir( $file . '/docroot/sites/all' ) )
-		            	$adminurl = sprintf( '%1$s/user', $siteroot );
-		            else if ( is_dir( $file . '/' . $rootfolder . '/manager' ) )
-		            	$adminurl = sprintf( '%1$s/manager', $siteroot );
-
-								// If the user has defined an adminurl for the project we'll use that instead
-		            if (isset($siteoptions[$project]) &&  is_array( $siteoptions[$project] ) && array_key_exists( 'adminurl', $siteoptions[$project] ) )
-		            	$adminurl = $siteoptions[$project]['adminurl'];
-
-		            // If there's an admin url then we'll show it - the icon will depend on whether it looks like WP or not
-		            if ( ! empty( $adminurl ) )
-		            	printf( '<span class="admin-link badge glyphicon glyphicon-cog" data-link="%1$s"> </a>', $adminurl );
-		            
-		          echo '</a></li>';
-						} // foreach( glob( $d ) as $file )
-		   		} // foreach ( $dir as $d )
-		   	?>
-	   	</ul>
-	   	<div class="col-12-md footer">
-	   		<small>Proudly presented by <a href="//booncon.com">booncon</a></small>
-	   	</div>
+			            // If there's an admin url then we'll show it - the icon will depend on whether it looks like WP or not
+			            if ( ! empty( $adminurl ) )
+			            	printf( '<span class="admin-link badge glyphicon glyphicon-cog" data-link="%1$s"> </a>', $adminurl );
+			            
+			          echo '</a></li>';
+							}
+			   		}
+			   		if ($showaddlink) {
+			   	?>
+			   			<li class="col-sm-6 col-md-4 col-lg-3 site-item"><button class="list-group-item site-link add-new" data-toggle="modal" data-target="#addModal"><span class="glyphicon glyphicon-plus"></span> Add new</button></li>
+		   		<?php } ?>
+		   	</ul>
+		   	<div class="col-12-md footer">
+		   		<small>Proudly presented by <a href="//booncon.com">booncon</a></small>		   		
+		   	</div>
+			</div>
+		</div>
+		<!-- Modal -->
+		<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+		        <h4 class="modal-title" id="myModalLabel">Add a new project</h4>
+		      </div>
+		      <div class="modal-body">
+						<ul class="nav nav-tabs" role="tablist">
+						  <li role="presentation" class="active"><a href="#existingTab" role="tab" data-toggle="tab">Existing</a></li>
+						  <li role="presentation"><a href="#newTab" role="tab" data-toggle="tab">New</a></li>
+						</ul>
+						<div class="tab-content">
+						  <br>
+						  <div id="addProjectFormAlertWrap"></div>
+						  <div role="tabpanel" class="tab-pane active" id="existingTab">
+						  	<form id="addProjectForm" role="form">
+								  <div class="input-group">
+								    <input type="github" class="form-control" id="githubInput" placeholder="SSH clone URL to the existing repository...">
+							      <span class="input-group-btn">
+							        <button type="submit" class="btn btn-primary" id="addProject" data-loading-text="<i class='throbber'></i>">Clone project</button>
+							      </span>
+								  </div>
+								</form>
+						  </div>
+						  <div role="tabpanel" class="tab-pane" id="newTab">
+						  	<form id="createProjectForm" role="form">
+								  <div class="input-group">
+								    <input type="github" class="form-control" id="projectName" placeholder="Name of the new project...">
+							      <span class="input-group-btn">
+							        <button type="submit" class="btn btn-primary" id="createProject">Create project</button>
+							      </span>
+								  </div>
+								</form>
+						  </div>
+							<br>
+						  <span id="db-info" class="help-block"><strong>Remember:</strong> If a database with the same project name exists, it will be overwritten.</span>
+						  <span id="number-fact" class="help-block"></span>
+						</div>		        
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>		        
+		      </div>
+		    </div>
+		  </div>
 		</div>
 	</body>
 </html>
