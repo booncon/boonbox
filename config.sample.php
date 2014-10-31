@@ -11,12 +11,22 @@
 *  
 */
 
+$name = 'boonbøx';
+
+$header = 'Your local development projects:';
+
+$howtolink = 'https://www.dropbox.com/sh/r2ylo6d14hqf33k/AAATcDfRsoq0AfuCqUOl4EMNa?dl=0';
 
 /** directory name(s) */
 $dir = array("/www/sites/*");
-					
+          
 /** Your local top level domain */
 $tld = 'dev';
+
+$rootfolder = 'web';
+
+$username = 'sftsk';
+
 
 /*
 *
@@ -24,7 +34,7 @@ $tld = 'dev';
 *  In order of the priority they should be used.
 *
 */
-$icons = array( 'favicon.ico' );
+$icons = array( 'apple-touch-icon.png', 'favicon.ico' );
 
 /*
 *
@@ -33,11 +43,16 @@ $icons = array( 'favicon.ico' );
 *
 */
 $devtools = array(
-//	array( 'name' => 'Tool', 'url' => 'http://example.com/' ),
-	array( 'name' => 'Github', 'url' => 'https://github.com/booncon' ),
+  array( 'name' => 'Stage', 'url' => 'http://home.stage.bcon.io/' ),
+  array( 'name' => 'Github', 'url' => 'https://github.com/booncon' ),
+  array( 'name' => 'Trello', 'url' => 'https://trello.com' ),
   array( 'name' => 'booncloud', 'url' => 'https://cloud.bcon.io/' ),
+  array( 'name' => 'Digital Ocean', 'url' => 'https://cloud.digitalocean.com/' ),
+  array( 'name' => 'Hover', 'url' => 'https://www.hover.com/domains/' ),
   array( 'name' => 'PHP Info', 'url' => 'phpinfo.php' ),
-	);
+  );
+
+$showaddlink = true;
 
 /*
 *
@@ -52,12 +67,12 @@ $devtools = array(
 *
 *  'sitedir' => array( 'displayname' => 'Display Name', 'adminurl' => 'http://example.sites.dev/admin' ),
 *
-*/			
+*/      
 $siteoptions = array(
 //  'dirname' => 'Display Name',
-	// 'gapps' => array( 'displayname' => 'Gapps', 'adminurl' => 'http://gapps.dev/admin' ),
+  // 'gapps' => array( 'displayname' => 'Gapps', 'adminurl' => 'http://gapps.dev/admin' ),
 
-	);
+  );
 
 /*
 *
@@ -66,4 +81,4 @@ $siteoptions = array(
 *  your directories will be hidden.
 * 
 */
-$hiddensites = array( 'home', );
+$hiddensites = array( 'home', '_archive', 'index.html' );

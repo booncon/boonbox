@@ -12,6 +12,60 @@
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600' rel='stylesheet' type='text/css'>
 		<style>
+			/* originally authored by Nick Pettit - https://github.com/nickpettit/glide */
+			@-webkit-keyframes tada {
+			  0% {
+			    -webkit-transform: scale3d(1, 1, 1);
+			            transform: scale3d(1, 1, 1);
+			  }
+
+			  10%, 20% {
+			    -webkit-transform: scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg);
+			            transform: scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg);
+			  }
+
+			  30%, 50%, 70%, 90% {
+			    -webkit-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+			            transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+			  }
+
+			  40%, 60%, 80% {
+			    -webkit-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+			            transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+			  }
+
+			  100% {
+			    -webkit-transform: scale3d(1, 1, 1);
+			            transform: scale3d(1, 1, 1);
+			  }
+			}
+
+			@keyframes tada {
+			  0% {
+			    -webkit-transform: scale3d(1, 1, 1);
+			            transform: scale3d(1, 1, 1);
+			  }
+
+			  10%, 20% {
+			    -webkit-transform: scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg);
+			            transform: scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg);
+			  }
+
+			  30%, 50%, 70%, 90% {
+			    -webkit-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+			            transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+			  }
+
+			  40%, 60%, 80% {
+			    -webkit-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+			            transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+			  }
+
+			  100% {
+			    -webkit-transform: scale3d(1, 1, 1);
+			            transform: scale3d(1, 1, 1);
+			  }
+			}
 			/* Thanks a lot http://css-spinners.com/css/spinner/throbber.css */
 			@-webkit-keyframes throbber {
 			  0% {
@@ -26,35 +80,6 @@
 			    background: #dde2e7;
 			  }
 			}
-
-			@-moz-keyframes throbber {
-			  0% {
-			    background: #dde2e7;
-			  }
-
-			  10% {
-			    background: #6b9dc8;
-			  }
-
-			  40% {
-			    background: #dde2e7;
-			  }
-			}
-
-			@-o-keyframes throbber {
-			  0% {
-			    background: #dde2e7;
-			  }
-
-			  10% {
-			    background: #6b9dc8;
-			  }
-
-			  40% {
-			    background: #dde2e7;
-			  }
-			}
-
 			@keyframes throbber {
 			  0% {
 			    background: #dde2e7;
@@ -129,6 +154,10 @@
 				padding-left: 54px;
 				position: relative;
 				background-position: 4px 50%;
+			}
+			.site-link.new {
+				-webkit-animation: tada 2000ms 300ms ease-out;
+				animation: tada 2000ms 300ms ease-out;
 			}
 			.admin-link {
 				transition: all 0.1s;
@@ -215,24 +244,33 @@
 					e.preventDefault();
 				});
 				$('.site-link.add-new, .nav-tabs a').click(function () {
-					$('#addProjectFormAlertWrap').html('');
-					$('#githubInput').val('');
-					$('#projectName').val('');
+					$('#addProjectFormAlertWrap, #successAlertWrapper').html('');
+					$('#githubInput, #projectName').val('');
 				});
 				$( "#addProjectForm" ).submit(function( event ) {
 					$('#addProjectFormAlertWrap').html('');
-					if ($('#githubInput').val() !== '') {
+					var githubURL = $('#githubInput').val();
+					if (githubURL !== '' && githubURL.indexOf('/') !== -1) {
 						showFacts();
+						var projectName = githubURL.split('/');
+						projectName = projectName[projectName.length - 1].split('.')[0]
 						var $btn = $("#addProject").button('loading');
 						$.ajax({
 						  type: "GET",
 						  url: "add.php",
 						  data: { url: $('#githubInput').val() }
 						}).success(function (response) {
-							console.log(response);
-					  	$('#addProjectFormAlertWrap').html(showAlert('success', '<strong>Success!</strong> You have added a new project.'));
-					    $btn.button('reset');
-					    $('#main-content-wrapper').load('index.php #main-content');
+							console.log(response);					  	
+							$('#successAlertWrapper').html(showAlert('success', '<strong>Success!</strong> You have added the project "' + projectName + '".'));
+							$('#addModal').modal('hide');
+							window.setTimeout(function () {
+								$('#successAlertWrapper').html('');
+								$('.site-link').removeClass('new');
+							}, 10000);
+					  	$btn.button('reset');
+					    $('#main-content-wrapper').load('index.php #main-content', function () {
+					    	$('.site-link.' + projectName).addClass('new');
+					    });							
 					    $('#githubInput').val('');
 					    stopFacts();					    
 					  }).error(function (response) {
@@ -250,8 +288,15 @@
 				$( "#createProjectForm" ).submit(function( event ) {
 					$('#addProjectFormAlertWrap').html('');
 					showFacts();
+					var projectName = $('#projectName').val();
 					if ($('#projectName').val() !== '') {
-						$('#addProjectFormAlertWrap').html(showAlert('success', "<strong>Success!</strong> Create the project:\ncompser create 'name';\nroots sass clone as 'name';\npull styles from git;"));
+						$('#successAlertWrapper').html(showAlert('success', '<strong>Success!</strong> Create the project ' + projectName + ': composer create ' + projectName + '; roots sass clone as ' + projectName + '; pull styles from git;'));
+						$('#addModal').modal('hide');
+						window.setTimeout(function () {
+							$('#successAlertWrapper').html('');
+							$('.site-link').removeClass('new');
+						}, 10000);
+						$('.site-link.' + projectName).addClass('new');
 						$('#projectName').val('');
 						stopFacts();
 					}	else {
@@ -274,13 +319,20 @@
 						foreach ( $devtools as $tool ) {
 							printf( '<a href="%1$s" class="btn btn-default navbar-btn ext-link">%2$s</a>', $tool['url'], $tool['name'] );
 						}
+						if (isset($howtolink)) {
 					?>
-					<a href="<?php echo $howtolink; ?>" class="how-to pull-right btn btn-link navbar-btn ext-link">How to?</a>
+						<a href="<?php echo $howtolink; ?>" class="how-to pull-right btn btn-link navbar-btn ext-link">How to?</a>
+					<?php
+						}
+					?>	
 				</div>				
 			</div>
 		</nav>
-		<div id="main-content-wrapper">
-			<div id="main-content" class="container">
+		<div class="container">
+			<div id="successAlertWrapper"></div>
+		</div>
+		<div id="main-content-wrapper" class="container">			
+			<div id="main-content">
 				<h1><?php echo $header; ?></h1><br>
 				<ul class="list-group list-unstyled row">
 					<?php
@@ -294,6 +346,15 @@
 
 								if ( in_array( $project, $hiddensites ) ) continue;
 
+								// Display a link to the site
+		            $displayname = $project;
+		            if ( array_key_exists( $project, $siteoptions ) ) {
+		            	if ( is_array( $siteoptions[$project] ) )
+		            		$displayname = array_key_exists( 'displayname', $siteoptions[$project] ) ? $siteoptions[$project]['displayname'] : $project;
+		            	else
+		            		$displayname = $siteoptions[$project];
+		            }
+
 								echo '<li class="col-sm-6 col-md-4 col-lg-3 site-item">';
 
 								$siteroot = sprintf( 'http://%1$s.%2$s', $project, $tld );
@@ -306,16 +367,8 @@
 										break;
 			            	}
 			            }
-
-			            // Display a link to the site
-			            $displayname = $project;
-			            if ( array_key_exists( $project, $siteoptions ) ) {
-			            	if ( is_array( $siteoptions[$project] ) )
-			            		$displayname = array_key_exists( 'displayname', $siteoptions[$project] ) ? $siteoptions[$project]['displayname'] : $project;
-			            	else
-			            		$displayname = $siteoptions[$project];
-			            }
-			            printf( '<a class="list-group-item site-link" href="%1$s" ' . $icon_output . '>%2$s', $siteroot, $displayname );
+			            
+			            printf( '<a class="list-group-item site-link ' . $displayname . '" href="%1$s" ' . $icon_output . '>%2$s', $siteroot, $displayname );
 
 									// Display an icon with a link to the admin area
 			            $adminurl = '';
@@ -346,16 +399,15 @@
 		   		<?php } ?>
 		   	</ul>
 		   	<div class="col-12-md footer">
-		   		<small>Proudly presented by <a href="//booncon.com">booncon</a></small>		   		
+		   		<small>Proudly presented by <a href="//pixels.fi">booncon PIXELS</a></small>		   		
 		   	</div>
 			</div>
 		</div>
 		<!-- Modal -->
-		<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
+		<div class="modal fade" data-backdrop="static" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
 		  <div class="modal-dialog">
 		    <div class="modal-content">
 		      <div class="modal-header">
-		        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 		        <h4 class="modal-title" id="myModalLabel">Add a new project</h4>
 		      </div>
 		      <div class="modal-body">
