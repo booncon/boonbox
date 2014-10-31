@@ -53,6 +53,7 @@ $devtools = array(
   );
 
 $showaddlink = true;
+$showactions = true;
 
 /*
 *

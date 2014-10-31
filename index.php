@@ -152,19 +152,28 @@
 				background-size: 32px;
 				background-repeat: no-repeat;
 				padding-left: 54px;
-				position: relative;
 				background-position: 4px 50%;
+				position: relative;
+				border-bottom-left-radius: 4px;
+				border-bottom-right-radius: 4px;
+			}
+			.site-item.loading .site-link {
+				text-align: center;
+				padding-left: 0;
 			}
 			.site-link.new {
 				-webkit-animation: tada 2000ms 300ms ease-out;
 				animation: tada 2000ms 300ms ease-out;
 			}
 			.admin-link {
-				transition: all 0.1s;
+				position: absolute;
+				right: 10%;
+				top: 25%;
 			}
-			.admin-link:hover {
-				background-color: #e24b70;
-				transition: all 0.3s;
+			.dropdown-icon {
+				padding-right: 8px;
+				position: relative;
+				top: 2px;
 			}
 			.add-new.list-group-item {
 				border: none;
@@ -235,11 +244,52 @@
 			};
 
 			$(document).ready(function () {
-				$('.admin-link').click(function (e) {
-					if (e.cmdKey || e.metaKey) {
-						window.open($(this).data('link'));
-					} else {
-						window.location = $(this).data('link');
+				$('.actionBtn').click(function (e) {					
+					var projectName = $(this).data('project');
+					var displayName = $('.site-link.' + projectName).text();
+					if ($(this).hasClass('removeBtn')) {
+						var message = "Attention: This will remove all your local project files and wipe the database and user. Do you really want to delete this project? ";
+						var x = confirm(message);
+						if (x == true) {
+							$('.site-link.' + projectName).html('<i class="throbber"></i>').parent().addClass('loading').children().children('.dropdown-toggle').addClass('disabled');
+							$.ajax({
+							  type: "GET",
+							  url: "action.php",
+							  data: { remove: projectName }
+							}).success(function (response) {
+								console.log(response);					  	
+								$('#successAlertWrapper').html(showAlert('success', '<strong>Success!</strong> You removed the project "' + projectName + '".'));
+								$('.site-link.' + projectName).text(displayName).parent().removeClass('loading').children().children('.dropdown-toggle').removeClass('disabled');
+								window.setTimeout(function () {
+									$('#successAlertWrapper').html('');
+								}, 10000);
+						    $('#main-content-wrapper').load('index.php #main-content');				    
+						  }).error(function (response) {
+						  	console.log(response);
+						  	$('#successAlertWrapper').html(showAlert('danger', '<strong>Error!</strong> ' + response.responseText));
+						  });
+						}
+					} else if ($(this).hasClass('pullBtn')) {
+						var message = "Attention: This will overwrite your existing database. Are you sure there is nothing you need from it anymore?";
+						var x = confirm(message);
+						if (x == true) {
+							$('.site-link.' + projectName).html('<i class="throbber"></i>').parent().addClass('loading').children().children('.dropdown-toggle').addClass('disabled');
+							$.ajax({
+							  type: "GET",
+							  url: "action.php",
+							  data: { pull: projectName }
+							}).success(function (response) {
+								console.log(response);					  	
+								$('#successAlertWrapper').html(showAlert('success', '<strong>Success!</strong> Your project "' + projectName + '" is now in sync with staging.'));
+								$('.site-link.' + projectName).text(displayName).parent().removeClass('loading').children().children('.dropdown-toggle').removeClass('disabled');
+								window.setTimeout(function () {
+									$('#successAlertWrapper').html('');
+								}, 10000);				    
+						  }).error(function (response) {
+						  	console.log(response);
+						  	$('#successAlertWrapper').html(showAlert('danger', '<strong>Error!</strong> ' + response.responseText));
+						  });
+						}
 					}
 					e.preventDefault();
 				});
@@ -257,8 +307,8 @@
 						var $btn = $("#addProject").button('loading');
 						$.ajax({
 						  type: "GET",
-						  url: "add.php",
-						  data: { url: $('#githubInput').val() }
+						  url: "action.php",
+						  data: { add: $('#githubInput').val(), pull: projectName }
 						}).success(function (response) {
 							console.log(response);					  	
 							$('#successAlertWrapper').html(showAlert('success', '<strong>Success!</strong> You have added the project "' + projectName + '".'));
@@ -339,58 +389,67 @@
 						foreach ( $dir as $d ) {
 							$dirsplit = explode('/', $d);
 							$dirname = $dirsplit[count($dirsplit)-2];
-
 							foreach( glob( $d ) as $file )  {
-
 								$project = basename($file);
-
 								if ( in_array( $project, $hiddensites ) ) continue;
-
 								// Display a link to the site
 		            $displayname = $project;
 		            if ( array_key_exists( $project, $siteoptions ) ) {
-		            	if ( is_array( $siteoptions[$project] ) )
+		            	if ( is_array( $siteoptions[$project] ) ) {
 		            		$displayname = array_key_exists( 'displayname', $siteoptions[$project] ) ? $siteoptions[$project]['displayname'] : $project;
-		            	else
+		            	}
+		            	else {
 		            		$displayname = $siteoptions[$project];
+		            	}
 		            }
-
 								echo '<li class="col-sm-6 col-md-4 col-lg-3 site-item">';
-
 								$siteroot = sprintf( 'http://%1$s.%2$s', $project, $tld );
 
-			            // Display an icon for the site
+			          // Display an icon for the site
 								$icon_output = NULL;
 								foreach( $icons as $icon ) {
 									if ( file_exists( $file . '/' . $rootfolder . '/' . $icon ) || file_exists( $file . '/docroot/' . $icon ) ) {
 										$icon_output = sprintf( 'style="background-image:url(%1$s/%2$s);"', $siteroot, $icon );
 										break;
-			            	}
-			            }
+		            	}
+		            }
 			            
-			            printf( '<a class="list-group-item site-link ' . $displayname . '" href="%1$s" ' . $icon_output . '>%2$s', $siteroot, $displayname );
+		            printf( '<a class="list-group-item site-link ' . $displayname . '" href="%1$s" ' . $icon_output . '>%2$s', $siteroot, $displayname );
 
-									// Display an icon with a link to the admin area
-			            $adminurl = '';
-									// We'll start by checking if the site looks like it's a WordPress site
-			            if ( is_dir( $file . '/' . $rootfolder . '/wp/wp-admin' ) )
-			            	$adminurl = sprintf( '%1$s/admin', $siteroot );
-			            else if ( is_dir( $file . '/' . $rootfolder . '/sites/all' ) )
-			            	$adminurl = sprintf( '%1$s/user', $siteroot );
-			            else if ( is_dir( $file . '/docroot/sites/all' ) )
-			            	$adminurl = sprintf( '%1$s/user', $siteroot );
-			            else if ( is_dir( $file . '/' . $rootfolder . '/manager' ) )
-			            	$adminurl = sprintf( '%1$s/manager', $siteroot );
+								// Display an icon with a link to the admin area
+		            $adminurl = '';
+								// We'll start by checking if the site looks like it's a WordPress site
+		            if ( is_dir( $file . '/' . $rootfolder . '/wp/wp-admin' ) ) {
+		            	$adminurl = sprintf( '%1$s/admin', $siteroot );
+		            } else if ( is_dir( $file . '/' . $rootfolder . '/sites/all' ) ) {
+		            	$adminurl = sprintf( '%1$s/user', $siteroot );
+		            } else if ( is_dir( $file . '/docroot/sites/all' ) ) {
+		            	$adminurl = sprintf( '%1$s/user', $siteroot );
+		            } else if ( is_dir( $file . '/' . $rootfolder . '/manager' ) ) {
+		            	$adminurl = sprintf( '%1$s/manager', $siteroot );
+		            }
 
-									// If the user has defined an adminurl for the project we'll use that instead
-			            if (isset($siteoptions[$project]) &&  is_array( $siteoptions[$project] ) && array_key_exists( 'adminurl', $siteoptions[$project] ) )
-			            	$adminurl = $siteoptions[$project]['adminurl'];
-
-			            // If there's an admin url then we'll show it - the icon will depend on whether it looks like WP or not
-			            if ( ! empty( $adminurl ) )
-			            	printf( '<span class="admin-link badge glyphicon glyphicon-cog" data-link="%1$s"> </a>', $adminurl );
-			            
-			          echo '</a></li>';
+								// If the user has defined an adminurl for the project we'll use that instead
+		            if (isset($siteoptions[$project]) &&  is_array( $siteoptions[$project] ) && array_key_exists( 'adminurl', $siteoptions[$project] ) ) {
+		            	$adminurl = $siteoptions[$project]['adminurl'];
+		            }
+			        
+			          echo '</a>';								
+			          echo '<div class="dropdown admin-link">';
+								echo '  <button class="btn btn-default dropdown-toggle badge glyphicon glyphicon-cog" type="button" data-toggle="dropdown"> </button>';
+								echo '  <ul class="dropdown-menu dropdown-menu-right" role="menu" >';
+								if ( ! empty( $adminurl ) ) {
+									echo '    <li role="presentation"><a role="menuitem" tabindex="-1" href="' . $adminurl . '"><span class="dropdown-icon glyphicon glyphicon-user"></span>Back-end login</a></li>';
+								}
+								echo '    <li role="presentation"><a role="menuitem" tabindex="-1" href="http://' . $project . '.' . $tld . '.' . gethostbyname(trim(`hostname`)) . '.xip.io"><span class="dropdown-icon glyphicon glyphicon-flash"></span>xip.io link</a></li>';
+								if ($showactions) {
+									echo '		<li role="presentation" class="divider"></li>';
+									echo '    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="actionBtn pullBtn" data-project=' . $project . '><span class="dropdown-icon glyphicon glyphicon-cloud-download"></span>Pull uploads & db</a></li>';
+									echo '    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="actionBtn removeBtn" data-project=' . $project . '><span class="dropdown-icon glyphicon glyphicon-remove"></span>Remove the project</a></li>';
+								}
+								echo '  </ul>';
+								echo '</div>';
+			          echo '</li>';
 							}
 			   		}
 			   		if ($showaddlink) {
@@ -398,6 +457,7 @@
 			   			<li class="col-sm-6 col-md-4 col-lg-3 site-item"><button class="list-group-item site-link add-new" data-toggle="modal" data-target="#addModal"><span class="glyphicon glyphicon-plus"></span> Add new</button></li>
 		   		<?php } ?>
 		   	</ul>
+
 		   	<div class="col-12-md footer">
 		   		<small>Proudly presented by <a href="//pixels.fi">booncon PIXELS</a></small>		   		
 		   	</div>

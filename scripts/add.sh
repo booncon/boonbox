@@ -11,17 +11,7 @@ sitesdir=/www/sites # directory of the local websites
 # ----------------------- Don't change things below :) ------------------------ #
 
 github=$1 #pass repository as argument
-
-# Load RVM into a shell session *as a function*
-if [[ -s "$HOME/.rvm/scripts/rvm" ]] ; then
-  # First try to load from a user install
-  source "$HOME/.rvm/scripts/rvm"
-elif [[ -s "/usr/local/rvm/scripts/rvm" ]] ; then
-  # Then try to load from a root install
-  source "/usr/local/rvm/scripts/rvm"
-else
-  printf "ERROR: An RVM installation was not found.\n"
-fi
+scriptdir=$(pwd)
 
 # function to generate random strings of a given length
 function genpasswd() {
@@ -74,9 +64,6 @@ if [ ! -d "$name" ]; then
   echo -e $env > .env
 
   # create .htaccess
-  htaccess+="RewriteEngine on\n"
-  htaccess+="RewriteBase /\n\n"
-
   htaccess+="<IfModule mod_rewrite.c>\n"
   htaccess+="  RewriteEngine On\n"
   htaccess+="  RewriteBase /\n"
@@ -88,20 +75,13 @@ if [ ! -d "$name" ]; then
 
   echo -e $htaccess > web/.htaccess
 
-  # fetch file and database from staging
-  bundle install
-  bundle exec cap staging uploads:pull
-  bundle exec cap staging db:pull
-
   #install wordpress and other dependencies
   /usr/local/bin/composer install
 
-  # set up database & import content from staging
+  # set up database
   /usr/local/bin/mysql -uroot -p$rootpw -e "create database \`$name\`;"
   /usr/local/bin/mysql -uroot -p$rootpw -e "GRANT ALL PRIVILEGES  ON \`$name\`.* TO '$name'@'%' IDENTIFIED BY '$dbpassw';"
-  vendor/wp-cli/wp-cli/bin/wp db import ~/Downloads/$name.sql --path=web/wp
-  rm -rf ~/Downloads/$name.sql
-
+  
   echo 'The project has been set up :)'
   exit 0
 else 
