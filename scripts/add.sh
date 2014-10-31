@@ -49,8 +49,10 @@ if [ ! -d "$name" ]; then
   env+="DB_HOST=127.0.0.1\n\n"
 
   env+="WP_ENV=development\n"
-  env+="WP_HOME=http://"$name$devTLD"\n"
-  env+="WP_SITEURL=http://"$name$devTLD"/wp\n\n"
+  env+="WP_HOME=http://"$name$devTLD.$(ipconfig getifaddr en0)"\n"
+  env+="WP_SITEURL=http://"$name$devTLD.$(ipconfig getifaddr en0)"/wp\n\n"
+  env+="# WP_HOME=http://"$name$devTLD" # uncomment for local development\n"
+  env+="# WP_SITEURL=http://"$name$devTLD"/wp # uncomment for local development\n\n"
 
   env+="AUTH_KEY='$(genpasswd 32)'\n"
   env+="SECURE_AUTH_KEY='$(genpasswd 32)'\n"
