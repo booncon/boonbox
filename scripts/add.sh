@@ -41,7 +41,7 @@ if [ ! -d "$name" ]; then
   cd $name
 
   # create .env
-  dbpassw=$(genpasswd 12)
+  dbpassw=$(genpasswd 6)
 
   env+="DB_NAME="$name"\n"
   env+="DB_USER="$name"\n"
@@ -49,10 +49,10 @@ if [ ! -d "$name" ]; then
   env+="DB_HOST=127.0.0.1\n\n"
 
   env+="WP_ENV=development\n"
-  env+="WP_HOME=http://"$name$devTLD.$(ipconfig getifaddr en0)"\n"
-  env+="WP_SITEURL=http://"$name$devTLD.$(ipconfig getifaddr en0)"/wp\n\n"
-  env+="# WP_HOME=http://"$name$devTLD" # uncomment for local development\n"
-  env+="# WP_SITEURL=http://"$name$devTLD"/wp # uncomment for local development\n\n"
+  # env+="WP_HOME=http://"$name$devTLD.$(ipconfig getifaddr en0)"\n"
+  # env+="WP_SITEURL=http://"$name$devTLD.$(ipconfig getifaddr en0)"/wp\n\n"
+  env+="WP_HOME=http://"$name$devTLD"\n"
+  env+="WP_SITEURL=http://"$name$devTLD"/wp\n\n"
 
   env+="AUTH_KEY='$(genpasswd 32)'\n"
   env+="SECURE_AUTH_KEY='$(genpasswd 32)'\n"
@@ -77,11 +77,13 @@ if [ ! -d "$name" ]; then
 
   echo -e $htaccess > web/.htaccess
 
-  #install wordpress and other dependencies
-  /usr/local/bin/composer install
+  if [ -f composer.json ]; then
+    #install wordpress and other dependencies
+    /usr/local/bin/composer install
+  fi
 
   # set up database
-  /usr/local/bin/mysql -uroot -p$rootpw -e "create database \`$name\`;"
+  /usr/local/bin/mysql -uroot -p$rootpw -e "CREATE DATABASE \`$name\`;"
   /usr/local/bin/mysql -uroot -p$rootpw -e "GRANT ALL PRIVILEGES  ON \`$name\`.* TO '$name'@'%' IDENTIFIED BY '$dbpassw';"
   
   echo 'The project has been set up :)'

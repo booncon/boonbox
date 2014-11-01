@@ -444,7 +444,9 @@
 								echo '    <li role="presentation"><a role="menuitem" tabindex="-1" href="http://' . $project . '.' . $tld . '.' . gethostbyname(trim(`hostname`)) . '.xip.io"><span class="dropdown-icon glyphicon glyphicon-flash"></span>xip.io link</a></li>';
 								if ($showactions) {
 									echo '		<li role="presentation" class="divider"></li>';
-									echo '    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="actionBtn pullBtn" data-project=' . $project . '><span class="dropdown-icon glyphicon glyphicon-cloud-download"></span>Pull uploads & db</a></li>';
+									if ( file_exists($file . '/Capfile') && file_exists($file . '/Gemfile') ) {
+										echo '    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="actionBtn pullBtn" data-project=' . $project . '><span class="dropdown-icon glyphicon glyphicon-cloud-download"></span>Pull uploads & db</a></li>';
+									}
 									echo '    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="actionBtn removeBtn" data-project=' . $project . '><span class="dropdown-icon glyphicon glyphicon-remove"></span>Remove the project</a></li>';
 								}
 								echo '  </ul>';

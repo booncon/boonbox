@@ -31,12 +31,15 @@ if [ -f Gemfile ]; then
   bundle exec cap staging uploads:pull
   bundle exec cap staging db:pull
 
+  # add possible project wp-cli and global wp to the path
+  PATH=$(pwd)/vendor/wp-cli/wp-cli/bin:/usr/local/bin:$PATH
+
   if [ -f ~/Downloads/$name.sql ]; then
-    vendor/wp-cli/wp-cli/bin/wp db import ~/Downloads/$name.sql --path=web/wp
+    wp db import ~/Downloads/$name.sql --path=web/wp
     rm -rf ~/Downloads/$name.sql
   fi
 
-  echo 'The files have been pulled :)'
+  echo 'The files & db have been pulled :)'
   exit 0
 else 
   echo 'Sorry, there is nothing to fetch?!'
