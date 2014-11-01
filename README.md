@@ -6,13 +6,17 @@ Make sure you have xcode installed, agree to the tos after installing
 `xcode-select --install`
 
 Install Homebrew
-`ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
+```
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+```
 
 Use Homebrow to install MariaDB
 `brew install mariadb`
 
+
 Secure the MariaDB installation (use root as the root password)
 `mysql_secure_installation`
+
 
 Install and configure dnsmasq to intercept all .dev domains
 ```
@@ -26,6 +30,7 @@ sudo mkdir /etc/resolver
 sudo bash -c 'echo "nameserver 127.0.0.1" > /etc/resolver/dev'
 ```
 
+
 Set up your local development folders
 ```
 mkdir /www
@@ -37,6 +42,7 @@ cd web
 cp config.sample.php config.php //adapt the settings
 ```
 
+
 Create a php.ini file and change some values
 ```
 cp /etc/php.ini.default /etc/php.ini
@@ -47,8 +53,10 @@ display_errors = On
 log_errors = On
 ```
 
+
 Start Apache and visit http://home.dev
 `sudo apachectl start`
+
 
 Change some lines in the Apache config
 ```
@@ -71,6 +79,7 @@ LoadModule vhost_alias_module libexec/apache2/mod_vhost_alias.so
 
 Include /private/etc/apache2/extra/httpd-vhosts.conf
 ```
+
 
 Change the virtual hosts config
 ```
@@ -103,10 +112,11 @@ nano /private/etc/apache2/extra/httpd-vhosts.conf
 </Virtualhost>
 ```
 
+
 Restart apache & reload http://home.dev
 `sudo apachectl restart`
 
 Enjoy the boonbøx & start setting up projects :)
 
 —
-Thank you [blog post](http://mallinson.ca/post/osx-web-development) for providing the basics and inspiration :)
+Thank you [@cmall](https://twitter.com/cmall) for providing [inspiration](http://mallinson.ca/post/osx-web-development) and the basics to this project!
