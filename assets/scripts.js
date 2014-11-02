@@ -147,7 +147,7 @@ $(document).ready(function () {
   $( "#createProjectForm" ).submit(function (event) {
     $('#addProjectFormAlertWrap').html('');
     var projectName = $('#projectName').val();
-    if (projectName !== '') {
+    if (/^[A-Za-z]+[A-Za-z-]+[A-Za-z]+$/.test(projectName)) {
       showGifs();
       var $btn = $("#createProject").button('loading');
       $.ajax({
