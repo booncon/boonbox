@@ -39,7 +39,7 @@ mkdir /www/sites
 cd /www/home/
 git clone https://github.com/booncon/boonbox.git web
 cd web
-cp config.sample.php config.php //adapt the settings
+cp config.sample.json config.json //adapt the settings
 ```
 
 
