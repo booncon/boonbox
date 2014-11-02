@@ -2,14 +2,15 @@
 
 # fetches assets/ db pull from staging
 # @saftsaak
-# v0.8
+# v1.0
 
-rootpw=root # password for mysql root user
-sitesdir=/www/sites # directory of the local websites
+name=$1 #pass repository as argument
+scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-# ----------------------- Don't change things below :) ------------------------ #
+cd $scriptdir/..
 
-name=$1
+rootpw=$(php -r "\$config = json_decode(utf8_encode(file_get_contents('config.json')), true); print_r(\$config['mysqlrootpw']);")
+sitesdir=$(php -r "\$config = json_decode(utf8_encode(file_get_contents('config.json')), true); print_r(\$config['dirname']);")
 
 cd $sitesdir/$name
 

@@ -1,0 +1,45 @@
+{
+  "name" : "boonbøx",
+  "title" : "Your available websites:",
+  "username" : "name",
+  "email": "name@booncon.com",
+  "wpdefaultuser": "booncon",
+  "wpdefaultpw": "booncon",
+  "howtolink" : "https://www.dropbox.com/sh/r2ylo6d14hqf33k/AAATcDfRsoq0AfuCqUOl4EMNa?dl=0",
+  "dirname" : "/www/sites/",
+  "tld" : "dev",
+  "rootfolder" : [
+    ["web"],
+    ["docroot"],
+    ["web", "sites/all/themes/bc_pixels"]
+  ],
+  "adminpath" : [
+    ["/wp/wp-admin", "admin"],
+    ["/sites/all", "user"],
+    ["/manager", "manager"]
+  ],
+  "showaddlink" : true,
+  "showactions" : true,
+  "mysqlrootpw" : "root",
+  "icons" : [
+    "apple-touch-icon.png",
+    "favicon.ico"
+  ],
+  "devtools" : [
+    {"name": "Stage", "url": "http://home.stage.bcon.io"},
+    {"name": "Github", "url": "https://github.com/booncon"},
+    {"name": "Trello", "url": "https://trello.com"},
+    {"name": "booncloud", "url": "https://cloud.bcon.io"},
+    {"name": "Digital Ocean", "url": "https://cloud.digitalocean.com"},
+    {"name": "Hover", "url": "https://www.hover.com/domains"},
+    {"name": "PHP Info", "url": "phpinfo.php"}
+  ],
+  "siteoptions" : {
+    "home" : {"displayname": "Home", "adminurl": "http://home.stage.bcon.io"}
+  },
+  "hiddensites" : [
+    "home",
+    "_archive",
+    "index.html"
+  ]
+}

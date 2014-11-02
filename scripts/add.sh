@@ -2,16 +2,15 @@
 
 # set up a roots project from github with assets/ db pull from staging
 # @saftsaak
-# v0.8
-
-devTLD=.dev # tld for local dev domains
-rootpw=root # password for mysql root user
-sitesdir=/www/sites # directory of the local websites
-
-# ----------------------- Don't change things below :) ------------------------ #
+# v1.0
 
 github=$1 #pass repository as argument
-scriptdir=$(pwd)
+scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+cd $scriptdir/..
+
+rootpw=$(php -r "\$config = json_decode(utf8_encode(file_get_contents('config.json')), true); print_r(\$config['mysqlrootpw']);")
+sitesdir=$(php -r "\$config = json_decode(utf8_encode(file_get_contents('config.json')), true); print_r(\$config['dirname']);")
 
 # function to generate random strings of a given length
 function genpasswd() {
@@ -40,52 +39,14 @@ if [ ! -d "$name" ]; then
   # enter the project folder
   cd $name
 
-  # create .env
-  dbpassw=$(genpasswd 6)
-
-  env+="DB_NAME="$name"\n"
-  env+="DB_USER="$name"\n"
-  env+="DB_PASSWORD="$dbpassw"\n"
-  env+="DB_HOST=127.0.0.1\n\n"
-
-  env+="WP_ENV=development\n"
-  # env+="WP_HOME=http://"$name$devTLD.$(ipconfig getifaddr en0)"\n"
-  # env+="WP_SITEURL=http://"$name$devTLD.$(ipconfig getifaddr en0)"/wp\n\n"
-  env+="WP_HOME=http://"$name$devTLD"\n"
-  env+="WP_SITEURL=http://"$name$devTLD"/wp\n\n"
-
-  env+="AUTH_KEY='$(genpasswd 32)'\n"
-  env+="SECURE_AUTH_KEY='$(genpasswd 32)'\n"
-  env+="LOGGED_IN_KEY='$(genpasswd 32)'\n"
-  env+="NONCE_KEY='$(genpasswd 32)'\n"
-  env+="AUTH_SALT='$(genpasswd 32)'\n"
-  env+="SECURE_AUTH_SALT='$(genpasswd 32)'\n"
-  env+="LOGGED_IN_SALT='$(genpasswd 32)'\n"
-  env+="NONCE_SALT='$(genpasswd 32)'"
-
-  echo -e $env > .env
-
-  # create .htaccess
-  htaccess+="<IfModule mod_rewrite.c>\n"
-  htaccess+="  RewriteEngine On\n"
-  htaccess+="  RewriteBase /\n"
-  htaccess+="  RewriteRule ^index\.php$ - [L]\n"
-  htaccess+="  RewriteCond %{REQUEST_FILENAME} !-f\n"
-  htaccess+="  RewriteCond %{REQUEST_FILENAME} !-d\n"
-  htaccess+="  RewriteRule . /index.php [L]\n"
-  htaccess+="</IfModule>"
-
-  echo -e $htaccess > web/.htaccess
-
   if [ -f composer.json ]; then
     #install wordpress and other dependencies
     /usr/local/bin/composer install
   fi
 
-  # set up database
-  /usr/local/bin/mysql -uroot -p$rootpw -e "CREATE DATABASE \`$name\`;"
-  /usr/local/bin/mysql -uroot -p$rootpw -e "GRANT ALL PRIVILEGES  ON \`$name\`.* TO '$name'@'%' IDENTIFIED BY '$dbpassw';"
-  
+  # calling the script to set up the db and .env
+  $scriptdir/env.sh $name
+
   echo 'The project has been set up :)'
   exit 0
 else 
