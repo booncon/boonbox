@@ -7,7 +7,7 @@
 project=$1 #pass repository as argument
 scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-cd scriptdir/..
+cd $scriptdir/..
 
 rootpw=$(php -r "\$config = json_decode(utf8_encode(file_get_contents('config.json')), true); print_r(\$config['mysqlrootpw']);")
 sitesdir=$(php -r "\$config = json_decode(utf8_encode(file_get_contents('config.json')), true); print_r(\$config['dirname']);")
@@ -17,12 +17,12 @@ cd $sitesdir
 if [ -d "$project" ]; then
   # set up database & import content from staging
   /usr/local/bin/mysql -uroot -p$rootpw -e "drop database \`$project\`;"
-  /usr/local/bin/mysql -uroot -p$rootpw -e "drop user \`$project\`;"
+  /usr/local/bin/mysql -uroot -p$rootpw -e "REVOKE ALL PRIVILEGES, GRANT OPTION FROM \`$project\`;"
+  /usr/local/bin/mysql -uroot -p$rootpw -e "drop user \`$project\`@'%';"
   rm -rf $sitesdir/$project
-
   echo 'The project has been removed :)'
   exit 0
 else
   echo 'Sorry, the project' $project 'does not exist..'
   exit 1
-fi  
+fi

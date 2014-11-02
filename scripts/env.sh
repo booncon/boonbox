@@ -65,4 +65,6 @@ echo ".htaccess written"
 
 # set up database
 /usr/local/bin/mysql -uroot -p$rootpw -e "CREATE DATABASE \`$name\`;"
-/usr/local/bin/mysql -uroot -p$rootpw -e "GRANT ALL PRIVILEGES  ON \`$name\`.* TO '$name'@'%' IDENTIFIED BY '$dbpassw';"
+/usr/local/bin/mysql -uroot -p$rootpw -e "GRANT ALL PRIVILEGES ON \`$name\`.* TO '$name'@'%' IDENTIFIED BY '$dbpassw';"
+
+echo "database & user created"

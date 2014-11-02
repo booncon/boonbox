@@ -4,10 +4,10 @@
 # @saftsaak
 # v1.0
 
-github=$1 #pass repository as argument
+name=$1 #pass repository as argument
 scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-cd scriptdir/..
+cd $scriptdir/..
 
 tld=$(php -r "\$config = json_decode(utf8_encode(file_get_contents('config.json')), true); print_r(\$config['tld']);")
 rootpw=$(php -r "\$config = json_decode(utf8_encode(file_get_contents('config.json')), true); print_r(\$config['mysqlrootpw']);")
@@ -15,11 +15,6 @@ sitesdir=$(php -r "\$config = json_decode(utf8_encode(file_get_contents('config.
 email=$(php -r "\$config = json_decode(utf8_encode(file_get_contents('config.json')), true); print_r(\$config['email']);")
 wpdefaultpw=$(php -r "\$config = json_decode(utf8_encode(file_get_contents('config.json')), true); print_r(\$config['wpdefaultpw']);")
 wpdefaultuser=$(php -r "\$config = json_decode(utf8_encode(file_get_contents('config.json')), true); print_r(\$config['wpdefaultuser']);")
-
-# ----------------------- Don't change things below :) ------------------------ #
-
-name=$1
-scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 cd $sitesdir
 
@@ -48,6 +43,17 @@ EOF
   echo -e $themeInfo > web/app/themes/$name/style.css
   echo "theme style.css written"
 
+  # Overwrite the deploy scripts
+  cp $scriptdir/../templates/README.example.md README.md
+  cp $scriptdir/../templates/deploy.example.rb config/deploy.rb
+  cp $scriptdir/../templates/staging.example.rb config/deploy/staging.rb
+
+  # search and replace in the files: example_project -> project name
+  sed 's/example_project/'$name'/g' config/deploy.rb > config/deploy-tmp.rb
+  mv config/deploy-tmp.rb config/deploy.rb
+  sed 's/example_project/'$name'/g' README.md > README-tmp.md
+  mv README-tmp.md README.md
+
   # calling the script to set up the db and .env
   $scriptdir/env.sh $name
 
@@ -57,6 +63,12 @@ EOF
   # install wordpress and activate the roots theme
   wp core install --url=$name.$tld --title=$name --admin_user=$wpdefaultuser --admin_password=$wpdefaultpw --admin_email=$email
   wp theme activate $name
+  wp option set permalink_structure /%postname%/
+
+  git init
+  git add -A
+  git commit -am "intial commit"
+  git remote add origin git@github.com:booncon/$name.git
   
   echo 'The project has been created :)'
   exit 0

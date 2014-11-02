@@ -53,7 +53,9 @@ var reloadProjects = function (projectName) {
   $('#addModal').modal('hide');
   stopGifs();
   $('#main-content-wrapper').load('index.php #main-content', function () {
-    $('.site-item.' + projectName).addClass('new');
+    if (projectName !== undefined) {
+      $('.site-item.' + projectName).addClass('new');
+    }
     window.setTimeout(function () {
       $('#successAlertWrapper').html('');
       $('.site-item').removeClass('new');
@@ -62,6 +64,12 @@ var reloadProjects = function (projectName) {
 };
 
 $(document).ready(function () {
+  // click on brand refreshes projects -> ajax
+  $('#brand').click(function (e) {
+    reloadProjects();
+    e.preventDefault();
+  });
+
   // reset form when switching tabs or opening modal
   $( "body" ).on( "click", ".site-link.add-new, .nav-tabs a", function () {
     $('#addProjectFormAlertWrap, #successAlertWrapper').html('');
@@ -88,6 +96,7 @@ $(document).ready(function () {
         }).error(function (response) {
           console.log(response);
           $('#successAlertWrapper').html(showAlert('danger', '<strong>Error!</strong> ' + response.responseText));
+          reloadProjects();
         });
       }
     } else if ($(this).hasClass('pullBtn')) {
@@ -106,6 +115,7 @@ $(document).ready(function () {
         }).error(function (response) {
           console.log(response);
           $('#successAlertWrapper').html(showAlert('danger', '<strong>Error!</strong> ' + response.responseText));
+          reloadProjects();
         });
       }
     }
