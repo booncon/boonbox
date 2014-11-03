@@ -50,7 +50,7 @@ namespace :db do
         end
       end
       run_locally do
-        execute "rm example-project.sql"
+        execute :rm, "example-project.sql"
       end
     end
   end
@@ -59,6 +59,13 @@ end
 namespace :deploy do
   desc 'Setup a new project with files and db'
   task :setup do
+    on roles(:web) do  
+      if test "[ -d #{fetch(:deploy_to)} ]"
+        error 'Sorry, this project already exists'
+        exit 1
+      end
+    end  
+    dbpasw = ""
     invoke "#{scm}:check"
     invoke 'deploy:check:directories'
     invoke 'deploy:check:linked_dirs'
@@ -66,34 +73,36 @@ namespace :deploy do
     invoke 'deploy:check:make_linked_files'
     invoke 'deploy'
     run_locally do
-      execute :wp, "db export example-project.sql --path=web/wp" # "mv example-project.sql ~/Downloads/"
+      dbpasw = capture "echo $(awk /DB_PASSWORD/ #{File.expand_path File.dirname(__FILE__)}/../.env)"
+      dbpasw = dbpasw.split('=')[1]
+      info "#{dbpasw}"
+      execute :wp, "db export example-project.sql --path=web/wp"
     end
     invoke 'deploy:check:make_linked_files'
     on roles(:web) do
-      execute "#{fetch(:stage_script)}/db.sh #{fetch(:application)} 5bf0b7223898"
+      info "#{dbpasw}"
+      execute "#{fetch(:stage_script)}/db.sh #{fetch(:application)} #{dbpasw}"
     end  
     invoke 'db:push'
   end
 
   namespace :check do
-    desc 'Check files to be linked exist in shared'
+    desc 'Create the linked files'
     task :make_linked_files do
       next unless any? :linked_files
       on release_roles :all do |host|
         linked_files(shared_path).each do |file|
-          unless test "[ -f #{file} ]"
-            if "#{file}".include? ".htaccess"
-              upload! "#{File.expand_path File.dirname(__FILE__)}/../web/.htaccess", file
-            end  
-            if "#{file}".include? ".env"
-              upload! "#{File.expand_path File.dirname(__FILE__)}/../.env", file
-              execute :sed, "'s/development/staging/g' #{file} > /tmp/.env-tmp"
-              execute :mv, "/tmp/.env-tmp #{file}"
-              execute :sed, "'s/.dev/.stage.bcon.io/g' #{file} > /tmp/.env-tmp"
-              execute :mv, "/tmp/.env-tmp #{file}"
-              execute :sed, "'s/127.0.0.1/localhost/g' #{file} > /tmp/.env-tmp"
-              execute :mv, "/tmp/.env-tmp #{file}" 
-            end
+          if "#{file}".include? ".htaccess"
+            upload! "#{File.expand_path File.dirname(__FILE__)}/../web/.htaccess", file
+          end  
+          if "#{file}".include? ".env"
+            upload! "#{File.expand_path File.dirname(__FILE__)}/../.env", file
+            execute :sed, "'s/development/staging/g' #{file} > /tmp/.env-tmp"
+            execute :mv, "/tmp/.env-tmp #{file}"
+            execute :sed, "'s/.dev/.stage.bcon.io/g' #{file} > /tmp/.env-tmp"
+            execute :mv, "/tmp/.env-tmp #{file}"
+            execute :sed, "'s/127.0.0.1/localhost/g' #{file} > /tmp/.env-tmp"
+            execute :mv, "/tmp/.env-tmp #{file}" 
           end
         end
       end
