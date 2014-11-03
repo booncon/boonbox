@@ -58,9 +58,6 @@ EOF
   # calling the script to set up the db and .env
   $scriptdir/env.sh $name
 
-  # runs and npm install
-  $scriptdir/npm.sh $name
-
   # set proper path for wp-cli
   PATH=$(pwd)/vendor/wp-cli/wp-cli/bin:/usr/local/bin:$PATH
 
@@ -68,6 +65,9 @@ EOF
   wp core install --url=$name.$tld --title=$name --admin_user=$wpdefaultuser --admin_password=$wpdefaultpw --admin_email=$email
   wp theme activate $name
   wp option set permalink_structure /%postname%/
+
+  # runs and npm install
+  $scriptdir/npm.sh $name
 
   git init
   git add -A
