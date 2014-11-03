@@ -44,75 +44,94 @@
 				<h1><?php echo $config['title']; ?></h1><br>
 				<ul class="list-group list-unstyled row">
 					<?php
-							foreach( glob( $config['dirname'] . '*' ) as $file )  {
-								$project = basename($file);
-								if ( in_array( $project, $config['hiddensites'] ) ) continue;
-								// Display a link to the site
-		            $displayname = $project;
-		            if ( array_key_exists( $project, $config['siteoptions'] ) ) {
-		            	if ( is_array( $config['siteoptions'][$project] ) ) {
-		            		$displayname = array_key_exists( 'displayname', $config['siteoptions'][$project] ) ? $config['siteoptions'][$project]['displayname'] : $project;
-		            	}
-		            	else {
-		            		$displayname = $config['siteoptions'][$project];
-		            	}
-		            }
-								echo '<li class="col-sm-6 col-md-4 col-lg-3 site-item ' . $project . '">';
-								$siteroot = sprintf( 'http://%1$s.%2$s', $project, $config['tld'] );
-
-			          // Display an icon for the site
-								$icon_output = NULL;
-
-								foreach( $config['icons'] as $icon ) {
-									foreach( $config['rootfolder'] as $rootfolder ) {
-										$icon_path = count($rootfolder) >= 2 ? $rootfolder[0] . '/' . $rootfolder[1] : $rootfolder[0];
-										if (file_exists( $file . '/' . $icon_path . '/' . $icon )) {
-											$icon_output = sprintf( 'style="background-image:url(%1$s/%2$s);"', count($rootfolder) > 1 ? $siteroot . '/' . $rootfolder[1] : $siteroot, $icon );
-											break;
-		            		}
-									}
-									if (isset($icon_output)) {
-										break;
-									}
-								}
-			            
-		            printf( '<a class="list-group-item site-link ' . $displayname . '" href="%1$s" ' . $icon_output . '>%2$s', $siteroot, $displayname );
-
-		            // Display an icon with a link to the admin area
-		            $adminurl = '';
-
-		            foreach( $config['rootfolder'] as $rootfolder ) {
-		            	foreach ($config['adminpath'] as $adminpath) {
-		            		if ( is_dir( $file . '/' . $rootfolder[0] . '/' . $adminpath[0] ) ) {
-				            	$adminurl = $siteroot . '/' . $adminpath[1];
-				            }
-		            	}	
-		            }
-
-								// If the user has defined an adminurl for the project we'll use that instead
-		            if (isset($config['siteoptions'][$project]) && is_array( $config['siteoptions'][$project] ) && array_key_exists( 'adminurl', $config['siteoptions'][$project] ) ) {
-		            	$adminurl = $config['siteoptions'][$project]['adminurl'];
-		            }
-			        
-			          echo '</a>';								
-			          echo '<div class="dropdown admin-link">';
-								echo '  <button class="btn btn-default dropdown-toggle badge glyphicon glyphicon-cog" type="button" data-toggle="dropdown"> </button>';
-								echo '  <ul class="dropdown-menu dropdown-menu-right" role="menu" >';
-								if ( ! empty( $adminurl ) ) {
-									echo '    <li role="presentation"><a role="menuitem" tabindex="-1" href="' . $adminurl . '"><span class="dropdown-icon glyphicon glyphicon-user"></span>Back-end login</a></li>';
-								}
-								echo '    <li role="presentation"><a role="menuitem" tabindex="-1" href="http://' . $project . '.' . $config['tld'] . '.' . gethostbyname(trim(`hostname`)) . '.xip.io"><span class="dropdown-icon glyphicon glyphicon-flash"></span>xip.io link</a></li>';
-								if ($config['showactions']) {
-									echo '		<li role="presentation" class="divider"></li>';
-									if ( file_exists($file . '/Capfile') && file_exists($file . '/Gemfile') ) {
-										echo '    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="actionBtn pullBtn" data-project=' . $project . '><span class="dropdown-icon glyphicon glyphicon-cloud-download"></span>Pull uploads & db</a></li>';
-									}
-									echo '    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="actionBtn removeBtn" data-project=' . $project . '><span class="dropdown-icon glyphicon glyphicon-remove"></span>Remove ' . $project . '</a></li>';
-								}
-								echo '  </ul>';
-								echo '</div>';
-			          echo '</li>';
+						function url_exists($url) {
+					    $file_headers = @get_headers($url);
+							if ($file_headers[0] == 'HTTP/1.1 404 Not Found') {
+							   $exists = false;
+							} else {
+							   $exists = true;
 							}
+							return $exists;
+						}
+
+						$is_online = url_exists('http:google.com');
+
+						foreach( glob( $config['dirname'] . '*' ) as $file )  {
+							$project = basename($file);
+							if ( in_array( $project, $config['hiddensites'] ) ) continue;
+							// Display a link to the site
+	            $displayname = $project;
+	            if ( array_key_exists( $project, $config['siteoptions'] ) ) {
+	            	if ( is_array( $config['siteoptions'][$project] ) ) {
+	            		$displayname = array_key_exists( 'displayname', $config['siteoptions'][$project] ) ? $config['siteoptions'][$project]['displayname'] : $project;
+	            	}
+	            	else {
+	            		$displayname = $config['siteoptions'][$project];
+	            	}
+	            }
+							echo '<li class="col-sm-6 col-md-4 col-lg-3 site-item ' . $project . '">';
+							$siteroot = sprintf( 'http://%1$s.%2$s', $project, $config['tld'] );
+
+		          // Display an icon for the site
+							$icon_output = NULL;
+
+							foreach( $config['icons'] as $icon ) {
+								foreach( $config['rootfolder'] as $rootfolder ) {
+									$icon_path = count($rootfolder) >= 2 ? $rootfolder[0] . '/' . $rootfolder[1] : $rootfolder[0];
+									if (file_exists( $file . '/' . $icon_path . '/' . $icon )) {
+										$icon_output = sprintf( 'style="background-image:url(%1$s/%2$s);"', count($rootfolder) > 1 ? $siteroot . '/' . $rootfolder[1] : $siteroot, $icon );
+										break;
+	            		}
+								}
+								if (isset($icon_output)) {
+									break;
+								}
+							}
+		            
+	            printf( '<a class="list-group-item site-link ' . $displayname . '" href="%1$s" ' . $icon_output . '>%2$s', $siteroot, $displayname );
+
+	            // Display an icon with a link to the admin area
+	            $adminurl = '';
+
+	            foreach( $config['rootfolder'] as $rootfolder ) {
+	            	foreach ($config['adminpath'] as $adminpath) {
+	            		if ( is_dir( $file . '/' . $rootfolder[0] . '/' . $adminpath[0] ) ) {
+			            	$adminurl = $siteroot . '/' . $adminpath[1];
+			            }
+	            	}	
+	            }
+
+							// If the user has defined an adminurl for the project we'll use that instead
+	            if (isset($config['siteoptions'][$project]) && is_array( $config['siteoptions'][$project] ) && array_key_exists( 'adminurl', $config['siteoptions'][$project] ) ) {
+	            	$adminurl = $config['siteoptions'][$project]['adminurl'];
+	            }
+		        
+		          echo '</a>';								
+		          echo '<div class="dropdown admin-link">';
+							echo '  <button class="btn btn-default dropdown-toggle badge glyphicon glyphicon-cog" type="button" data-toggle="dropdown"> </button>';
+							echo '  <ul class="dropdown-menu dropdown-menu-right" role="menu" >';
+							if ( ! empty( $adminurl ) ) {
+								echo '    <li role="presentation"><a role="menuitem" tabindex="-1" href="' . $adminurl . '"><span class="dropdown-icon glyphicon glyphicon-user"></span>Back-end login</a></li>';
+							}
+							echo '    <li role="presentation"><a role="menuitem" tabindex="-1" href="http://' . $project . '.' . $config['tld'] . '.' . gethostbyname(trim(`hostname`)) . '.xip.io"><span class="dropdown-icon glyphicon glyphicon-flash"></span>xip.io link</a></li>';
+							$exists_on_stage = url_exists('http://' . $project . '.stage.bcon.io');
+							if ($is_online && $exists_on_stage) {
+								echo '    <li role="presentation"><a role="menuitem" tabindex="-1" href="http://' . $project . '.stage.bcon.io"><span class="dropdown-icon glyphicon glyphicon-share"></span>Staging link</a></li>';
+							}
+							if ($config['showactions']) {
+								echo '		<li role="presentation" class="divider"></li>';								
+								if ($is_online && !$exists_on_stage) {
+									echo '    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="actionBtn pushBtn" data-project=' . $project . '><span class="dropdown-icon glyphicon glyphicon-cloud-upload"></span>Create on staging</a></li>';
+								}
+								if (file_exists($file . '/Capfile') && file_exists($file . '/Gemfile') && $is_online) {
+									echo '    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="actionBtn pullBtn" data-project=' . $project . '><span class="dropdown-icon glyphicon glyphicon-cloud-download"></span>Pull uploads & db</a></li>';
+								}
+								echo '    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="actionBtn removeBtn" data-project=' . $project . '><span class="dropdown-icon glyphicon glyphicon-remove"></span>Remove ' . $project . '</a></li>';
+							}
+							echo '  </ul>';
+							echo '</div>';
+		          echo '</li>';
+						}
 			   		if ($config['showaddlink']) {
 			   	?>
 			   			<li class="col-sm-6 col-md-4 col-lg-3 site-item"><button class="list-group-item site-link add-new" data-toggle="modal" data-target="#addModal"><span class="glyphicon glyphicon-plus"></span> Add new</button></li>

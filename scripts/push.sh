@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# runs an npm install
+# fetches assets/ db pull from staging
 # @saftsaak
 # v1.0
 
@@ -10,10 +10,8 @@ scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $scriptdir/..
 
 sitesdir=$(php -r "\$config = json_decode(utf8_encode(file_get_contents('config.json')), true); print_r(\$config['dirname']);")
-themeroot=$(php -r "\$config = json_decode(utf8_encode(file_get_contents('config.json')), true); print_r(\$config['themeroot']);")
 
-# add to path for npm
-PATH=/usr/local/bin:$PATH
+cd $sitesdir/$name
 
 # Load RVM into a shell session *as a function*
 if [[ -s "$HOME/.rvm/scripts/rvm" ]] ; then
@@ -26,8 +24,21 @@ else
   printf "ERROR: An RVM installation was not found.\n"
 fi
 
-cd $sitesdir$name$themeroot$name
+# only if the project does not exist already
+if [ -f Gemfile ]; then
+  # push git repository to github
+  if ! git push -u origin master
+  then
+    echo 'This git repository does not exist, please set it up.'
+    exit 2
+  fi  
 
-npm install
+  # install the bundle and create on staging
+  bundle exec cap staging deploy:setup
 
-echo "npm installed"
+  echo 'The projects has been set up on staging :)'
+  exit 0
+else 
+  echo 'Sorry, are you sure this project is set up?!'
+  exit 1
+fi

@@ -118,6 +118,25 @@ $(document).ready(function () {
           reloadProjects();
         });
       }
+    } else if ($(this).hasClass('pushBtn')) {
+      var message = "Please make sure that the git repository has been set up and that the project does not exist on staging!";
+      var x = confirm(message);
+      if (x === true) {
+        $('.site-link.' + projectName).html('<i class="throbber"></i>').parent().addClass('loading').children().children('.dropdown-toggle').addClass('disabled');
+        $.ajax({
+          type: "GET",
+          url: "action.php",
+          data: { push: projectName }
+        }).success(function (response) {
+          console.log(response);              
+          $('#successAlertWrapper').html(showAlert('success', '<strong>Success!</strong> Your project "' + projectName + '" has been set up on staging.'));
+          reloadProjects(projectName);
+        }).error(function (response) {
+          console.log(response);
+          $('#successAlertWrapper').html(showAlert('danger', '<strong>Error!</strong> ' + response.responseText));
+          reloadProjects();
+        });
+      }
     }
     e.preventDefault();
   });
