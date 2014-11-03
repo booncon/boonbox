@@ -12,6 +12,9 @@ cd $scriptdir/..
 rootpw=$(php -r "\$config = json_decode(utf8_encode(file_get_contents('config.json')), true); print_r(\$config['mysqlrootpw']);")
 sitesdir=$(php -r "\$config = json_decode(utf8_encode(file_get_contents('config.json')), true); print_r(\$config['dirname']);")
 
+# add to path for npm
+PATH=/usr/local/bin:$PATH
+
 # function to generate random strings of a given length
 function genpasswd() {
   local l=$1
