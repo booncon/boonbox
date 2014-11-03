@@ -27,7 +27,7 @@
     "favicon.ico"
   ],
   "devtools" : [
-    {"name": "bc stⱥge", "url": "http://stage.bcon.io"},
+    {"name": "boonstage", "url": "http://stage.bcon.io"},
     {"name": "Github", "url": "https://github.com/booncon"},
     {"name": "Trello", "url": "https://trello.com"},
     {"name": "booncloud", "url": "https://cloud.bcon.io"},
