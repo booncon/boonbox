@@ -123,6 +123,10 @@
 body {
   font-family: 'Open Sans', sans-serif;
 }
+.brand-logo {
+  height: 36px;
+  margin-top: -8px;
+}
 .ext-link {
   margin-right: 12px;
 }

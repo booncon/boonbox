@@ -20,7 +20,15 @@
 		<nav class="navbar navbar-default" role="navigation">
 			<div class="container-fluid">
 				<div class="navbar-header">
-					<a id="brand" class="navbar-brand" href="#"><?php echo $config['name']; ?></a>
+					<a id="brand" class="navbar-brand" href="#">
+						<?php
+							if (file_exists('assets/additional/' . $config['name'] . '-logo-wide.png')) {
+								echo '<img class="brand-logo" alt="' . $config['name'] . '" src="assets/additional/' . $config['name'] . '-logo-wide.png">';
+							} else {
+								echo $config['name'];
+							}
+						?>
+					</a>
 				</div>
 				<div class="container">					
 					<?php
