@@ -16,9 +16,9 @@ cd $sitesdir
 
 if [ -d "$project" ]; then
   # set up database & import content from staging
-  /usr/local/bin/mysql -uroot -p$rootpw -e "drop database \`$project\`;"
-  /usr/local/bin/mysql -uroot -p$rootpw -e "REVOKE ALL PRIVILEGES, GRANT OPTION FROM \`$project\`;"
-  /usr/local/bin/mysql -uroot -p$rootpw -e "drop user \`$project\`@'%';"
+  mysql -uroot -p$rootpw -e "drop database \`$project\`;"
+  mysql -uroot -p$rootpw -e "REVOKE ALL PRIVILEGES, GRANT OPTION FROM \`$project\`;"
+  mysql -uroot -p$rootpw -e "drop user \`$project\`@'%';"
   rm -rf $sitesdir/$project
   echo 'The project has been removed :)'
   exit 0

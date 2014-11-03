@@ -26,6 +26,7 @@ EOF
   cd $name
   # clone the roots sass theme
   git clone https://github.com/roots/roots-sass.git web/app/themes/$name
+  rm -rf web/app/themes/$name/.git
   
   #create the theme style.css content
   themeInfo="/*\n"
@@ -49,9 +50,9 @@ EOF
   cp $scriptdir/../templates/staging.example.rb config/deploy/staging.rb
 
   # search and replace in the files: example_project -> project name
-  sed 's/example_project/'$name'/g' config/deploy.rb > config/deploy-tmp.rb
+  sed 's/example-project/'$name'/g' config/deploy.rb > config/deploy-tmp.rb
   mv config/deploy-tmp.rb config/deploy.rb
-  sed 's/example_project/'$name'/g' README.md > README-tmp.md
+  sed 's/example-project/'$name'/g' README.md > README-tmp.md
   mv README-tmp.md README.md
 
   # calling the script to set up the db and .env
