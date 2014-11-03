@@ -29,7 +29,7 @@ if [ -f Gemfile ]; then
   # push git repository to github
   if ! git push -u origin master
   then
-    echo 'This git repository does not exist, please set it up.'
+    echo 'This git repository does not exist, please set it up and make sure it has the right permissions.'
     exit 2
   fi  
 

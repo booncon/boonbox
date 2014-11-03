@@ -30,7 +30,7 @@ cd $sitesdir
 # only if the project does not exist already
 if [ ! -d "$name" ]; then
   # clone into the project from github
-  if ! /usr/bin/git clone $github
+  if ! git clone $github
   then
       echo 'This git repository does not exist.'
       exit 2
@@ -41,7 +41,7 @@ if [ ! -d "$name" ]; then
 
   if [ -f composer.json ]; then
     #install wordpress and other dependencies
-    /usr/local/bin/composer install
+    composer install
   fi
 
   # calling the script to set up the db and .env

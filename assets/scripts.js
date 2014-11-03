@@ -49,10 +49,11 @@ var stopGifs = function () {
   giphys = "";
 };
 
-var reloadProjects = function (projectName) {
-  $('#addModal').modal('hide');
-  stopGifs();
+var reloadProjects = function (alert, projectName) {
   $('#main-content-wrapper').load('index.php #main-content', function () {
+    $('#addModal').modal('hide');
+    stopGifs();
+    $('#successAlertWrapper').html(alert);
     if (projectName !== undefined) {
       $('.site-item.' + projectName).addClass('new');
     }
@@ -90,13 +91,11 @@ $(document).ready(function () {
           url: "action.php",
           data: { remove: projectName }
         }).success(function (response) {
-          console.log(response);              
-          $('#successAlertWrapper').html(showAlert('success', '<strong>Success!</strong> You removed the project "' + projectName + '".'));
-          reloadProjects(projectName);
+          console.log(response);
+          reloadProjects(showAlert('success', '<strong>Success!</strong> You removed the project "' + projectName + '".'), projectName);
         }).error(function (response) {
           console.log(response);
-          $('#successAlertWrapper').html(showAlert('danger', '<strong>Error!</strong> ' + response.responseText));
-          reloadProjects();
+          reloadProjects(showAlert('danger', '<strong>Error!</strong> ' + response.responseText));
         });
       }
     } else if ($(this).hasClass('pullBtn')) {
@@ -109,13 +108,11 @@ $(document).ready(function () {
           url: "action.php",
           data: { pull: projectName }
         }).success(function (response) {
-          console.log(response);              
-          $('#successAlertWrapper').html(showAlert('success', '<strong>Success!</strong> Your project "' + projectName + '" is now in sync with staging.'));
-          reloadProjects(projectName);
+          console.log(response);
+          reloadProjects(showAlert('success', '<strong>Success!</strong> Your project "' + projectName + '" is now in sync with staging.'), projectName);
         }).error(function (response) {
           console.log(response);
-          $('#successAlertWrapper').html(showAlert('danger', '<strong>Error!</strong> ' + response.responseText));
-          reloadProjects();
+          reloadProjects(showAlert('danger', '<strong>Error!</strong> ' + response.responseText));
         });
       }
     } else if ($(this).hasClass('pushBtn')) {
@@ -128,13 +125,11 @@ $(document).ready(function () {
           url: "action.php",
           data: { push: projectName }
         }).success(function (response) {
-          console.log(response);              
-          $('#successAlertWrapper').html(showAlert('success', '<strong>Success!</strong> Your project "' + projectName + '" has been set up on staging.'));
-          reloadProjects(projectName);
+          console.log(response);
+          reloadProjects(showAlert('success', '<strong>Success!</strong> Your project "' + projectName + '" has been set up on staging.'), projectName);
         }).error(function (response) {
           console.log(response);
-          $('#successAlertWrapper').html(showAlert('danger', '<strong>Error!</strong> ' + response.responseText));
-          reloadProjects();
+          reloadProjects(showAlert('danger', '<strong>Error!</strong> ' + response.responseText));
         });
       }
     }
@@ -155,9 +150,8 @@ $(document).ready(function () {
         url: "action.php",
         data: { add: $('#githubInput').val(), pull: projectName }
       }).success(function (response) {
-        console.log(response);              
-        $('#successAlertWrapper').html(showAlert('success', '<strong>Success!</strong> You have added the project "' + projectName + '".'));
-        reloadProjects(projectName);
+        console.log(response);
+        reloadProjects(showAlert('success', '<strong>Success!</strong> You have added the project "' + projectName + '".'), projectName);
         $btn.button('reset');             
       }).error(function (response) {
         console.log(response);
@@ -184,9 +178,8 @@ $(document).ready(function () {
         url: "action.php",
         data: { create: $('#projectName').val() }
       }).success(function (response) {
-        console.log(response);              
-        $('#successAlertWrapper').html(showAlert('success', '<strong>Success!</strong> You have created the project "' + projectName + '".'));
-        reloadProjects(projectName);
+        console.log(response);
+        reloadProjects(showAlert('success', '<strong>Success!</strong> You have created the project "' + projectName + '".'), projectName);
         $btn.button('reset');
       }).error(function (response) {
         console.log(response);
