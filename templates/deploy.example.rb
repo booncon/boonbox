@@ -64,7 +64,7 @@ namespace :deploy do
         error 'Sorry, this project already exists'
         exit 1
       end
-    end  
+    end
     dbpasw = ""
     invoke "#{scm}:check"
     invoke 'deploy:check:directories'
@@ -82,6 +82,7 @@ namespace :deploy do
     on roles(:web) do
       info "#{dbpasw}"
       execute "#{fetch(:stage_script)}/db.sh #{fetch(:application)} #{dbpasw}"
+      execute "#{fetch(:stage_script)}/npm.sh #{fetch(:application)}"
     end  
     invoke 'db:push'
   end
@@ -107,5 +108,5 @@ namespace :deploy do
         end
       end
     end
-  end  
+  end
 end
