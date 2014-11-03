@@ -10,7 +10,6 @@ scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $scriptdir/..
 
 tld=$(php -r "\$config = json_decode(utf8_encode(file_get_contents('config.json')), true); print_r(\$config['tld']);")
-rootpw=$(php -r "\$config = json_decode(utf8_encode(file_get_contents('config.json')), true); print_r(\$config['mysqlrootpw']);")
 sitesdir=$(php -r "\$config = json_decode(utf8_encode(file_get_contents('config.json')), true); print_r(\$config['dirname']);")
 
 cd $sitesdir/$name
@@ -63,8 +62,5 @@ echo -e $htaccess > web/.htaccess
 
 echo ".htaccess written"
 
-# set up database
-/usr/local/bin/mysql -uroot -p$rootpw -e "CREATE DATABASE \`$name\`;"
-/usr/local/bin/mysql -uroot -p$rootpw -e "GRANT ALL PRIVILEGES ON \`$name\`.* TO '$name'@'%' IDENTIFIED BY '$dbpassw';"
-
-echo "database & user created"
+# calling the script to set up the db and .env
+$scriptdir/db.sh $name $dbpassw
