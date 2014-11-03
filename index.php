@@ -95,16 +95,15 @@
 									break;
 								}
 							}
-		            
-	            printf( '<a class="list-group-item site-link ' . $displayname . '" href="%1$s" ' . $icon_output . '>%2$s', $siteroot, $displayname );
 
-	            // Display an icon with a link to the admin area
+							// Display an icon with a link to the admin area
 	            $adminurl = '';
 
 	            foreach( $config['rootfolder'] as $rootfolder ) {
 	            	foreach ($config['adminpath'] as $adminpath) {
 	            		if ( is_dir( $file . '/' . $rootfolder[0] . '/' . $adminpath[0] ) ) {
 			            	$adminurl = $siteroot . '/' . $adminpath[1];
+			            	$is_wp = $adminpath[1] === 'admin' ? true : false;
 			            }
 	            	}	
 	            }
@@ -113,6 +112,10 @@
 	            if (isset($config['siteoptions'][$project]) && is_array( $config['siteoptions'][$project] ) && array_key_exists( 'adminurl', $config['siteoptions'][$project] ) ) {
 	            	$adminurl = $config['siteoptions'][$project]['adminurl'];
 	            }
+		          $displayname = $is_wp ? $displayname . ' <span class="glyphicon glyphicon-star dropdown-icon"> </span>' : $displayname;
+
+	            printf( '<a class="list-group-item site-link ' . $project . '" href="%1$s" ' . $icon_output . '>%2$s', $siteroot, $displayname );
+	            
 		        
 		          echo '</a>';								
 		          echo '<div class="dropdown admin-link">';
@@ -122,16 +125,16 @@
 								echo '    <li role="presentation"><a role="menuitem" tabindex="-1" href="' . $adminurl . '"><span class="dropdown-icon glyphicon glyphicon-user"></span>Back-end login</a></li>';
 							}
 							echo '    <li role="presentation"><a role="menuitem" tabindex="-1" href="http://' . $project . '.' . $config['tld'] . '.' . gethostbyname(trim(`hostname`)) . '.xip.io"><span class="dropdown-icon glyphicon glyphicon-flash"></span>xip.io link</a></li>';
-							$exists_on_stage = url_exists('http://' . $project . '.stage.bcon.io');
-							if ($is_online && $exists_on_stage) {
-								echo '    <li role="presentation"><a role="menuitem" tabindex="-1" href="http://' . $project . '.stage.bcon.io"><span class="dropdown-icon glyphicon glyphicon-share"></span>Staging link</a></li>';
-							}
 							if ($config['showactions']) {
+								$exists_on_stage = url_exists('http://' . $project . '.stage.bcon.io');
+								if ($is_online && $exists_on_stage) {
+									echo '    <li role="presentation"><a role="menuitem" tabindex="-1" href="http://' . $project . '.stage.bcon.io"><span class="dropdown-icon glyphicon glyphicon-share"></span>Staging link</a></li>';
+								}
 								echo '		<li role="presentation" class="divider"></li>';								
-								if ($is_online && !$exists_on_stage) {
+								if ($is_online && !$exists_on_stage && $adminurl && $is_wp) {
 									echo '    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="actionBtn pushBtn" data-project=' . $project . '><span class="dropdown-icon glyphicon glyphicon-cloud-upload"></span>Create on staging</a></li>';
 								}
-								if (file_exists($file . '/Capfile') && file_exists($file . '/Gemfile') && $is_online) {
+								if (file_exists($file . '/Capfile') && file_exists($file . '/Gemfile') && $is_wp && $is_online) {
 									echo '    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="actionBtn pullBtn" data-project=' . $project . '><span class="dropdown-icon glyphicon glyphicon-cloud-download"></span>Pull uploads & db</a></li>';
 								}
 								echo '    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="actionBtn removeBtn" data-project=' . $project . '><span class="dropdown-icon glyphicon glyphicon-remove"></span>Remove ' . $project . '</a></li>';
