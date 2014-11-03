@@ -47,6 +47,9 @@ if [ ! -d "$name" ]; then
   # calling the script to set up the db and .env
   $scriptdir/env.sh $name
 
+  # runs and npm install
+  $scriptdir/npm.sh $name
+
   echo 'The project has been set up :)'
   exit 0
 else 

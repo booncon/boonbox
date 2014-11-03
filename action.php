@@ -22,6 +22,11 @@
     exec('sudo -u ' . $config['username'] . ' ' . getcwd() . '/scripts/pull.sh ' . $_GET["pull"], $messages, $returnCode);
     echo implode('<br>', $messages);
   }
+  if (isset($_GET["npm"])) {
+    $returnCode = 0;
+    exec('sudo -u ' . $config['username'] . ' ' . getcwd() . '/scripts/npm.sh ' . $_GET["npm"], $messages, $returnCode);
+    echo implode('<br>', $messages);
+  }
   if (isset($_GET["remove"])) {
     $returnCode = 0;
     exec('sudo -u ' . $config['username'] . ' ' . getcwd() . '/scripts/remove.sh ' . $_GET["remove"], $messages, $returnCode);

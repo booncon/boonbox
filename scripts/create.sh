@@ -34,7 +34,7 @@ EOF
   themeInfo+="Theme URI:          http://roots.io/starter-theme/\n";
   themeInfo+="Description:        This theme is based on the Roots starter theme based on HTML5 Boilerplate & Bootstrap. <a href=\"https://github.com/roots/roots/contributors\">Contribute on GitHub</a>\n";
   themeInfo+="Version:            1.0.0\n";
-  themeInfo+="Author:             booncon PIXELS oy\n";
+  themeInfo+="Author:             booncon PIXELS\n";
   themeInfo+="Author URI:         http://pixels.fi/\n\n";
 
   themeInfo+="License:            MIT License\n";
@@ -57,6 +57,9 @@ EOF
 
   # calling the script to set up the db and .env
   $scriptdir/env.sh $name
+
+  # runs and npm install
+  $scriptdir/npm.sh $name
 
   # set proper path for wp-cli
   PATH=$(pwd)/vendor/wp-cli/wp-cli/bin:/usr/local/bin:$PATH
