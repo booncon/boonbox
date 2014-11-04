@@ -76,14 +76,14 @@ namespace :deploy do
       dbpasw = capture "echo $(awk /DB_PASSWORD/ #{File.expand_path File.dirname(__FILE__)}/../.env)"
       dbpasw = dbpasw.split('=')[1]
       info "#{dbpasw}"
-      execute :wp, "db export example-project.sql --path=web/wp"
+      with path: "$(pwd)/vendor/wp-cli/wp-cli/bin:/usr/local/bin:$PATH" do
+        execute :wp, "db export demo.sql --path=web/wp"
+      end
     end
-    invoke 'deploy:check:make_linked_files'
     on roles(:web) do
       info "#{dbpasw}"
       execute "#{fetch(:stage_script)}/db.sh #{fetch(:application)} #{dbpasw}"
-      execute "#{fetch(:stage_script)}/npm.sh #{fetch(:application)}"
-    end  
+    end
     invoke 'db:push'
   end
 

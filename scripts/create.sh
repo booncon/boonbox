@@ -15,8 +15,20 @@ sitesdir=$(php -r "\$config = json_decode(utf8_encode(file_get_contents('config.
 email=$(php -r "\$config = json_decode(utf8_encode(file_get_contents('config.json')), true); print_r(\$config['email']);")
 wpdefaultpw=$(php -r "\$config = json_decode(utf8_encode(file_get_contents('config.json')), true); print_r(\$config['wpdefaultpw']);")
 wpdefaultuser=$(php -r "\$config = json_decode(utf8_encode(file_get_contents('config.json')), true); print_r(\$config['wpdefaultuser']);")
+themeroot=$(php -r "\$config = json_decode(utf8_encode(file_get_contents('config.json')), true); print_r(\$config['themeroot']);")
 
 cd $sitesdir
+
+# Load RVM into a shell session *as a function*
+if [[ -s "$HOME/.rvm/scripts/rvm" ]] ; then
+  # First try to load from a user install
+  source "$HOME/.rvm/scripts/rvm"
+elif [[ -s "/usr/local/rvm/scripts/rvm" ]] ; then
+  # Then try to load from a root install
+  source "/usr/local/rvm/scripts/rvm"
+else
+  printf "ERROR: An RVM installation was not found.\n"
+fi
 
 if [ ! -d "$name" ]; then
   PATH=/usr/local/bin:$PATH
@@ -41,7 +53,7 @@ EOF
   themeInfo+="License URI:        http://opensource.org/licenses/MIT";
   themeInfo+="*/";
 
-  echo -e $themeInfo > web/app/themes/$name/style.css
+  echo -e $themeInfo > $themeroot$name/style.css
   echo "theme style.css written"
 
   # Overwrite the deploy scripts
@@ -50,10 +62,13 @@ EOF
   cp $scriptdir/../templates/staging.example.rb config/deploy/staging.rb
 
   # search and replace in the files: example_project -> project name
-  sed 's/example-project/'$name'/g' config/deploy.rb > config/deploy-tmp.rb
-  mv config/deploy-tmp.rb config/deploy.rb
-  sed 's/example-project/'$name'/g' README.md > README-tmp.md
-  mv README-tmp.md README.md
+  sed -i '' 's/example-project/'$name'/g' config/deploy.rb
+  sed -i '' 's/example-project/'$name'/g' README.md
+
+  # fix stupid roots gitignore
+  sed -i '' 's/\*main\*/main/g' $themeroot$name/.gitignore
+  sed -i '' 's/\*scripts\*/scripts/g' $themeroot$name/.gitignore
+  sed -i '' '/modernizr/d' $themeroot$name/.gitignore
 
   # calling the script to set up the db and .env
   $scriptdir/env.sh $name
@@ -68,6 +83,13 @@ EOF
 
   # runs and npm install
   $scriptdir/npm.sh $name
+
+  # building the production asset files
+  cd $themeroot$name
+  grunt build
+  echo 'grunt build successful'
+
+  cd $sitesdir$name
 
   git init
   git add -A

@@ -26,7 +26,7 @@ else
   printf "ERROR: An RVM installation was not found.\n"
 fi
 
-cd $sitesdir$name$themeroot$name
+cd $sitesdir$name/$themeroot$name
 
 npm install
 
