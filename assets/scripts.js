@@ -65,12 +65,67 @@ var reloadProjects = function (alert, projectName) {
   });
 };
 
+// add an existing project
+var addProject = function () {
+  $('#addProjectFormAlertWrap').html('');
+  var githubURL = $('#githubInput').val();
+  if (githubURL !== '' && githubURL.indexOf('/') !== -1) {
+    showGifs();
+    var projectName = githubURL.split('/');
+    projectName = projectName[projectName.length - 1].split('.')[0]
+    var $btn = $("#addProject").button('loading');
+    $.ajax({
+      type: "GET",
+      url: "action.php",
+      data: { add: $('#githubInput').val(), pull: projectName }
+    }).success(function (response) {
+      console.log(response);
+      reloadProjects(showAlert('success', '<strong>Success!</strong> You have added the project "' + projectName + '".'), projectName);          
+    }).error(function (response) {
+      console.log(response);
+      $('#addProjectFormAlertWrap').html(showAlert('danger', '<strong>Error!</strong> ' + response.responseText));
+      $btn.button('reset');
+      stopGifs();
+    });
+  } else {
+    $('#addProjectFormAlertWrap').html(showAlert('danger', '<strong>Error!</strong> ' + errors[0]));
+    stopGifs();
+  }
+};
+
+// create a new project
+var createProject = function () {
+  $('#addProjectFormAlertWrap').html('');
+  var projectName = $('#projectName').val();
+  if (/^[a-z]+[a-z-]+[a-z]+$/.test(projectName)) {
+    showGifs();
+    var $btn = $("#createProject").button('loading');
+    $.ajax({
+      type: "GET",
+      url: "action.php",
+      data: { create: $('#projectName').val() }
+    }).success(function (response) {
+      console.log(response);
+      reloadProjects(showAlert('success', '<strong>Success!</strong> You have created the project "' + projectName + '".'), projectName);
+    }).error(function (response) {
+      console.log(response);
+      $('#addProjectFormAlertWrap').html(showAlert('danger', '<strong>Error!</strong> ' + response.responseText));
+      $btn.button('reset');
+      stopGifs();
+    });
+  } else {
+    $('#addProjectFormAlertWrap').html(showAlert('danger', '<strong>Error!</strong> ' + errors[1]));
+    stopGifs();
+  }
+};
+
 $(document).ready(function () {
+  // if link contains url for a project to setup :)
   if (window.location.hash.indexOf("#add=") > -1) {
     $('#addModal').modal('show');
     $('#githubInput').val(window.location.hash.split('=')[1]);
-  }  
-
+    addProject();
+  }
 
   // click on brand refreshes projects -> ajax
   $('#brand').click(function (e) {
@@ -144,58 +199,14 @@ $(document).ready(function () {
   });
 
   // add an existing project
-  $( "#addProjectForm" ).submit(function (event) {
-    $('#addProjectFormAlertWrap').html('');
-    var githubURL = $('#githubInput').val();
-    if (githubURL !== '' && githubURL.indexOf('/') !== -1) {
-      showGifs();
-      var projectName = githubURL.split('/');
-      projectName = projectName[projectName.length - 1].split('.')[0]
-      var $btn = $("#addProject").button('loading');
-      $.ajax({
-        type: "GET",
-        url: "action.php",
-        data: { add: $('#githubInput').val(), pull: projectName }
-      }).success(function (response) {
-        console.log(response);
-        reloadProjects(showAlert('success', '<strong>Success!</strong> You have added the project "' + projectName + '".'), projectName);          
-      }).error(function (response) {
-        console.log(response);
-        $('#addProjectFormAlertWrap').html(showAlert('danger', '<strong>Error!</strong> ' + response.responseText));
-        $btn.button('reset');
-        stopGifs();
-      });
-    } else {
-      $('#addProjectFormAlertWrap').html(showAlert('danger', '<strong>Error!</strong> ' + errors[0]));
-      stopGifs();
-    }
+  $("#addProjectForm").submit(function (event) {
+    addProject();
     event.preventDefault();
   });
 
   // create a new project
-  $( "#createProjectForm" ).submit(function (event) {
-    $('#addProjectFormAlertWrap').html('');
-    var projectName = $('#projectName').val();
-    if (/^[a-z]+[a-z-]+[a-z]+$/.test(projectName)) {
-      showGifs();
-      var $btn = $("#createProject").button('loading');
-      $.ajax({
-        type: "GET",
-        url: "action.php",
-        data: { create: $('#projectName').val() }
-      }).success(function (response) {
-        console.log(response);
-        reloadProjects(showAlert('success', '<strong>Success!</strong> You have created the project "' + projectName + '".'), projectName);
-      }).error(function (response) {
-        console.log(response);
-        $('#addProjectFormAlertWrap').html(showAlert('danger', '<strong>Error!</strong> ' + response.responseText));
-        $btn.button('reset');
-        stopGifs();
-      });
-    } else {
-      $('#addProjectFormAlertWrap').html(showAlert('danger', '<strong>Error!</strong> ' + errors[1]));
-      stopGifs();
-    }
+  $("#createProjectForm").submit(function (event) {
+    createProject();
     event.preventDefault();
   });
 });

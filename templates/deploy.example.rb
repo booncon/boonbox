@@ -13,6 +13,19 @@ set :linked_dirs, %w{web/app/uploads}
 
 set :stage_script, "/var/www/stage/home/current/web/scripts"
 
+# namespace :htpasswd do
+#   desc "Pull the remote uploaded files"
+#   task :create do
+#     on roles(:all) do |host|
+#       info "Create a .htpasswd"
+#       # puts "Fetching the uploads from #{fetch(:stage)}"
+#       # system("rsync -avzh #{fetch(:user)}@#{host}:#{fetch(:uploads_path)} #{File.expand_path File.dirname(__FILE__)}/../web/app/")
+#     end
+#   end
+# end
+
+# after 'deploy:publishing', 'deploy:restart'
+
 namespace :uploads do
   desc "Pull the remote uploaded files"
   task :pull do
