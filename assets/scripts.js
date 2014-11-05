@@ -52,6 +52,7 @@ var stopGifs = function () {
 var reloadProjects = function (alert, projectName) {
   $('#main-content-wrapper').load('index.php #main-content', function () {
     $('#addModal').modal('hide');
+    $("#addProject, #createProject").button('reset');
     stopGifs();
     $('#successAlertWrapper').html(alert);
     if (projectName !== undefined) {
@@ -151,8 +152,7 @@ $(document).ready(function () {
         data: { add: $('#githubInput').val(), pull: projectName }
       }).success(function (response) {
         console.log(response);
-        reloadProjects(showAlert('success', '<strong>Success!</strong> You have added the project "' + projectName + '".'), projectName);
-        $btn.button('reset');             
+        reloadProjects(showAlert('success', '<strong>Success!</strong> You have added the project "' + projectName + '".'), projectName);          
       }).error(function (response) {
         console.log(response);
         $('#addProjectFormAlertWrap').html(showAlert('danger', '<strong>Error!</strong> ' + response.responseText));
@@ -180,7 +180,6 @@ $(document).ready(function () {
       }).success(function (response) {
         console.log(response);
         reloadProjects(showAlert('success', '<strong>Success!</strong> You have created the project "' + projectName + '".'), projectName);
-        $btn.button('reset');
       }).error(function (response) {
         console.log(response);
         $('#addProjectFormAlertWrap').html(showAlert('danger', '<strong>Error!</strong> ' + response.responseText));

@@ -77,7 +77,7 @@ namespace :deploy do
       dbpasw = dbpasw.split('=')[1]
       info "#{dbpasw}"
       with path: "$(pwd)/vendor/wp-cli/wp-cli/bin:/usr/local/bin:$PATH" do
-        execute :wp, "db export demo.sql --path=web/wp"
+        execute :wp, "db export example-project.sql --path=web/wp"
       end
     end
     on roles(:web) do
