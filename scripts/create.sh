@@ -57,20 +57,20 @@ EOF
   echo "theme style.css written"
 
   # Overwrite the deploy scripts
-  cp $scriptdir/../templates/README.example.md README.md
-  cp $scriptdir/../templates/deploy.example.rb config/deploy.rb
-  cp $scriptdir/../templates/staging.example.rb config/deploy/staging.rb
+  cp $scriptdir/../templates/README.example.md $sitesdir$name/README.md
+  cp $scriptdir/../templates/deploy.example.rb $sitesdir$name/config/deploy.rb
+  cp $scriptdir/../templates/staging.example.rb $sitesdir$name/config/deploy/staging.rb
 
   # search and replace in the files: example_project -> project name
-  sed -i '' 's/example-project/'$name'/g' config/deploy.rb
-  sed -i '' 's/example-project/'$name'/g' README.md
+  sed -i '' 's/example-project/'$name'/g' $sitesdir$name/config/deploy.rb
+  sed -i '' 's/example-project/'$name'/g' $sitesdir$name/README.md
 
   # fix stupid roots gitignore
-  sed -i '' 's/\*main\*/main/g' $themeroot$name/.gitignore
-  sed -i '' 's/\*scripts\*/scripts/g' $themeroot$name/.gitignore
-  sed -i '' '/modernizr/d' $themeroot$name/.gitignore
+  sed -i '' 's/\*main\*/main/g' $sitesdir$name/$themeroot$name/.gitignore
+  sed -i '' 's/\*scripts\*/scripts/g' $sitesdir$name/$themeroot$name/.gitignore
+  sed -i '' '/modernizr/d' $sitesdir$name/$themeroot$name/.gitignore
 
-  sed -i '' 's/sourcemap: true/sourcemap: false/g' $themeroot$name/Gruntfile.js
+  sed -i '' 's/sourcemap: true/sourcemap: false/g' $sitesdir$name/$themeroot$name/Gruntfile.js
 
   # calling the script to set up the db and .env
   $scriptdir/env.sh $name
