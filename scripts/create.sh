@@ -70,6 +70,8 @@ EOF
   sed -i '' 's/\*scripts\*/scripts/g' $themeroot$name/.gitignore
   sed -i '' '/modernizr/d' $themeroot$name/.gitignore
 
+  sed -i '' 's/sourcemap: true/sourcemap: false/g' $themeroot$name/Gruntfile.js
+
   # calling the script to set up the db and .env
   $scriptdir/env.sh $name
 

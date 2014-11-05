@@ -170,7 +170,7 @@ $(document).ready(function () {
   $( "#createProjectForm" ).submit(function (event) {
     $('#addProjectFormAlertWrap').html('');
     var projectName = $('#projectName').val();
-    if (/^[A-Za-z]+[A-Za-z-]+[A-Za-z]+$/.test(projectName)) {
+    if (/^[a-z]+[a-z-]+[a-z]+$/.test(projectName)) {
       showGifs();
       var $btn = $("#createProject").button('loading');
       $.ajax({
