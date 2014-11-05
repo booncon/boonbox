@@ -66,6 +66,12 @@ var reloadProjects = function (alert, projectName) {
 };
 
 $(document).ready(function () {
+  if (window.location.hash.indexOf("#add=") > -1) {
+    $('#addModal').modal('show');
+    $('#githubInput').val(window.location.hash.split('=')[1]);
+  }  
+
+
   // click on brand refreshes projects -> ajax
   $('#brand').click(function (e) {
     reloadProjects();
