@@ -206,8 +206,19 @@ a:hover {
 }
 .test-container p {
   margin: 0px;
-  padding: 15px;
+  padding: 16px;
 }
-.test-container .well {
-  margin-bottom: 0;
+.test-container .glyphicon {
+  margin-right: 6px;
+}
+.inset-wrap {
+  margin-top: -8px;
+}
+.inset-wrap p.inset {
+  padding-left: 40px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+.inset-wrap p.inset:last-child {
+  padding-bottom: 16px;
 }

@@ -12,12 +12,14 @@
   <body>
     <div class="container-fluid">
       <div class="container test-container">
-        <h1><?php echo $config['name']; ?> system test</h1>
+        <h1><?php echo $config['name']; ?> system test</h1><br>
     		<?php          
           exec('sudo -u ' . $config['username'] . ' ' . getcwd() . '/scripts/test.sh ', $messages, $returnCode);
           echo implode('<br>', $messages);
         ?>
+        <br>
+        <br>
       </div>
     </div>
 	</body>	
-</html>		
+</html>
