@@ -175,6 +175,13 @@ else
     echo '<p class="bg-success"><span class="glyphicon glyphicon-ok"> </span> brew '$(brew --version)' installed</p>'
   fi
 
+  if ! which composer >/dev/null
+  then
+    echo '<p class="bg-danger"><span class="glyphicon glyphicon-remove"> </span> composer not installed, please install: `https://getcomposer.org/doc/00-intro.md#globally-on-osx-via-homebrew-`</p>'
+  else
+    echo '<p class="bg-success"><span class="glyphicon glyphicon-ok"> </span> '$(composer --version)' installed</p>'
+  fi
+
   if ! which wp >/dev/null
   then
     echo '<p class="bg-danger"><span class="glyphicon glyphicon-remove"> </span> wp-cli not installed, please install: `http://wp-cli.org`</p>'
@@ -208,13 +215,6 @@ else
     echo '<p class="bg-danger"><span class="glyphicon glyphicon-remove"> </span> compass not installed, please install: `gem install compass`</p>'
   else
     echo '<p class="bg-success"><span class="glyphicon glyphicon-ok"> </span> '$(compass version | head -n 1)' installed</p>'
-  fi
-
-  if ! which composer >/dev/null
-  then
-    echo '<p class="bg-danger"><span class="glyphicon glyphicon-remove"> </span> composer not installed, please install: `https://getcomposer.org/download/`</p>'
-  else
-    echo '<p class="bg-success"><span class="glyphicon glyphicon-ok"> </span> '$(composer --version)' installed</p>'
   fi
 
   if ! which sass >/dev/null
