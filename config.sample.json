@@ -33,7 +33,8 @@
     {"name": "booncloud", "url": "https://cloud.bcon.io"},
     {"name": "Digital Ocean", "url": "https://cloud.digitalocean.com"},
     {"name": "Hover", "url": "https://www.hover.com/domains"},
-    {"name": "PHP Info", "url": "phpinfo.php"}
+    {"name": "PHP Info", "url": "phpinfo.php"},
+    {"name": "Test", "url": "test.php"}
   ],
   "siteoptions" : {
     "home" : {"displayname": "Home", "adminurl": "http://home.stage.bcon.io"}

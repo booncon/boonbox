@@ -13,11 +13,30 @@ set :linked_dirs, %w{web/app/uploads}
 
 set :stage_script, "/var/www/stage/home/current/web/scripts"
 
+# desc 'Symlink linked files'
+#   task :linked_files do
+#     next unless any? :linked_files
+#     on release_roles :all do
+#       execute :mkdir, '-p', linked_file_dirs(release_path)
+
+#       fetch(:linked_files).each do |file|
+#         target = release_path.join(file)
+#         source = shared_path.join(file)
+#         unless test "[ -L #{target} ]"
+#           if test "[ -f #{target} ]"
+#             execute :rm, target
+#           end
+#           execute :ln, '-s', source, target
+#         end
+#       end
+#     end
+#   end
+
 # namespace :htpasswd do
 #   desc "Pull the remote uploaded files"
-#   task :create do
+#   task :link do
 #     on roles(:all) do |host|
-#       info "Create a .htpasswd"
+#       info "Linking the .htpasswd"
 #       # puts "Fetching the uploads from #{fetch(:stage)}"
 #       # system("rsync -avzh #{fetch(:user)}@#{host}:#{fetch(:uploads_path)} #{File.expand_path File.dirname(__FILE__)}/../web/app/")
 #     end

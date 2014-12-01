@@ -210,6 +210,13 @@ else
     echo '<p class="bg-success"><span class="glyphicon glyphicon-ok"> </span> '$(compass version | head -n 1)' installed</p>'
   fi
 
+  if ! which composer >/dev/null
+  then
+    echo '<p class="bg-danger"><span class="glyphicon glyphicon-remove"> </span> composer not installed, please install: `https://getcomposer.org/download/`</p>'
+  else
+    echo '<p class="bg-success"><span class="glyphicon glyphicon-ok"> </span> '$(composer --version)' installed</p>'
+  fi
+
   if ! which sass >/dev/null
   then
     echo '<p class="bg-danger"><span class="glyphicon glyphicon-remove"> </span> compass not installed, please install: `gem install sass`</p>'

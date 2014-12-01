@@ -4,6 +4,7 @@
 		<meta charset="utf-8">
 		<?php
 			$config = json_decode(file_get_contents('config.json'), true);
+			$this_ip = gethostbyname(trim(`hostname`));
 		?>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<title><?php echo $config['name']; ?></title>
@@ -40,7 +41,8 @@
 						<a href="<?php echo $config['howtolink']; ?>" class="how-to pull-right btn btn-link navbar-btn ext-link">How to?</a>
 					<?php
 						}
-					?>	
+					?>
+					<a class="btn btn-default navbar-btn pull-right"><?php echo $this_ip; ?></a>
 				</div>				
 			</div>
 		</nav>
@@ -62,7 +64,7 @@
 							return $exists;
 						}
 
-						$is_online = url_exists('http:google.com');
+						$is_online = url_exists('http://google.com');						
 
 						foreach( glob( $config['dirname'] . '*' ) as $file )  {
 							$project = basename($file);
@@ -124,7 +126,7 @@
 							if ( ! empty( $adminurl ) ) {
 								echo '    <li role="presentation"><a role="menuitem" tabindex="-1" href="' . $adminurl . '"><span class="dropdown-icon glyphicon glyphicon-user"></span>Back-end login</a></li>';
 							}
-							echo '    <li role="presentation"><a role="menuitem" tabindex="-1" href="http://' . $project . '.' . $config['tld'] . '.' . gethostbyname(trim(`hostname`)) . '.xip.io"><span class="dropdown-icon glyphicon glyphicon-flash"></span>xip.io link</a></li>';
+							echo '    <li role="presentation"><a role="menuitem" tabindex="-1" href="http://' . $project . '.' . $config['tld'] . '.' . $this_ip . '.xip.io"><span class="dropdown-icon glyphicon glyphicon-flash"></span>xip.io link</a></li>';
 							if ($config['showactions']) {
 								$exists_on_stage = url_exists('http://' . $project . '.stage.bcon.io');
 								if ($is_online && $exists_on_stage) {
