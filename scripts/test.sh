@@ -29,9 +29,9 @@ else
 
   if [ ! -f '/private/etc/apache2/httpd.conf' ]
   then
-    echo '<p class="bg-danger"><span class="glyphicon glyphicon-remove"> </span> httpd.conf does not exist, please create</p>'
+    echo '<p class="bg-danger"><span class="glyphicon glyphicon-remove"> </span> /private/etc/apache2/httpd.conf does not exist, please create</p>'
   else
-    httpdconf='<p class="bg-success"><span class="glyphicon glyphicon-ok"> </span> httpd.conf exists</p><div class="inset-wrap">'
+    httpdconf='<p class="bg-success"><span class="glyphicon glyphicon-ok"> </span> /private/etc/apache2/httpd.conf exists</p><div class="inset-wrap">'
     if grep -li '#LoadModule php5_module libexec/apache2/libphp5.so' '/private/etc/apache2/httpd.conf' >/dev/null
     then
       httpdconf+='<p class="bg-danger inset"><span class="glyphicon glyphicon-remove"> </span> uncomment `LoadModule php5_module libexec/apache2/libphp5.so`</p>'
@@ -44,6 +44,13 @@ else
       httpdconf+='<p class="bg-danger inset"><span class="glyphicon glyphicon-remove"> </span> uncomment `LoadModule rewrite_module libexec/apache2/mod_rewrite.so`</p>'
     else
       httpdconf+='<p class="bg-success inset"><span class="glyphicon glyphicon-ok"> </span> LoadModule rewrite_module libexec/apache2/mod_rewrite.so</p>'
+    fi
+
+    if grep -li '#LoadModule vhost_alias_module libexec/apache2/mod_vhost_alias.so' '/private/etc/apache2/httpd.conf' >/dev/null
+    then
+      httpdconf+='<p class="bg-danger inset"><span class="glyphicon glyphicon-remove"> </span> uncomment `LoadModule vhost_alias_module libexec/apache2/mod_vhost_alias.so`</p>'
+    else
+      httpdconf+='<p class="bg-success inset"><span class="glyphicon glyphicon-ok"> </span> LoadModule vhost_alias_module libexec/apache2/mod_vhost_alias.so</p>'
     fi
 
     if grep -li '#Include /private/etc/apache2/extra/httpd-vhosts.conf' '/private/etc/apache2/httpd.conf' >/dev/null
@@ -78,9 +85,9 @@ else
 
   if [ ! -f '/etc/php.ini' ]
   then
-    echo '<p class="bg-danger"><span class="glyphicon glyphicon-remove"> </span> php.ini does not exist, please create `cp /etc/php.ini.default /etc/php.ini`</p>'
+    echo '<p class="bg-danger"><span class="glyphicon glyphicon-remove"> </span> /etc/php.ini does not exist, please create `cp /etc/php.ini.default /etc/php.ini`</p>'
   else
-    phpini='<p class="bg-success"><span class="glyphicon glyphicon-ok"> </span> php.ini exists</p><div class="inset-wrap">'
+    phpini='<p class="bg-success"><span class="glyphicon glyphicon-ok"> </span> /etc/php.ini exists</p><div class="inset-wrap">'
     if ! grep -li 'post_max_size = 256M' '/etc/php.ini' >/dev/null
     then
       phpini+='<p class="bg-danger inset"><span class="glyphicon glyphicon-remove"> </span> set `post_max_size = 256M`</p>'

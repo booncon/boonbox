@@ -1,7 +1,8 @@
 {
   "name" : "boonbox",
   "title" : "Your available websites:",
-  "username" : "name",
+  "username" : "name",  
+  "ngrok": "https://ngrok.com/user/signup",
   "email": "name@booncon.com",
   "wpdefaultuser": "booncon",
   "wpdefaultpw": "booncon",

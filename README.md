@@ -62,6 +62,8 @@ Change some lines in the Apache config
 ```
 nano /private/etc/apache2/httpd.conf
 LoadModule php5_module libexec/apache2/libphp5.so
+LoadModule rewrite_module libexec/apache2/mod_rewrite.so
+LoadModule vhost_alias_module libexec/apache2/mod_vhost_alias.so
 
 #<Directory />
 	#    AllowOverride none
@@ -74,8 +76,6 @@ LoadModule php5_module libexec/apache2/libphp5.so
 </IfModule>
 
 ServerAdmin luki@booncon.com //your e-mail address
-
-LoadModule vhost_alias_module libexec/apache2/mod_vhost_alias.so
 
 Include /private/etc/apache2/extra/httpd-vhosts.conf
 ```
@@ -113,7 +113,7 @@ nano /private/etc/apache2/extra/httpd-vhosts.conf
 ```
 
 
-Restart apache & reload http://home.dev
+Restart apache & reload http://home.dev/test.php & make sure eveything is green :)
 `sudo apachectl restart`
 
 Enjoy the boonbøx & start setting up projects :)
