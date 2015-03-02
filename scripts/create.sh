@@ -90,6 +90,7 @@ EOF
 
   # building the production asset files
   cd $themeroot$name
+  npm cache clean
   npm install
   bower install
   gulp
