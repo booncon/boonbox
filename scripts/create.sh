@@ -59,7 +59,7 @@ EOF
   # Overwrite the deploy scripts
   # cp $scriptdir/../templates/README.example.md $sitesdir$name/README.md
   cp $scriptdir/../templates/deploy.example.rb $sitesdir$name/config/deploy.rb
-  cp $scriptdir/../templates/boonstage.example.rb $sitesdir$name/config/deploy/staging.rb
+  cp $scriptdir/../templates/boonstage.example.rb $sitesdir$name/config/deploy/boonstage.rb
 
   # search and replace in the files: example_project -> project name
   sed -i '' 's/example-project/'$name'/g' $sitesdir$name/config/deploy.rb
