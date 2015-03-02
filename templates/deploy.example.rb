@@ -45,6 +45,28 @@ set :stage_script, "/var/www/stage/home/current/web/scripts"
 
 # after 'deploy:publishing', 'deploy:restart'
 
+namespace :build_assets do
+  desc "Create and push the build assets"
+  task :push do
+    run_locally do
+      within "#{File.expand_path File.dirname(__FILE__)}/../web/app/themes/#{fetch(:application)}" do
+        puts "Attempting to create production assets with gulp"
+        execute :gulp, "--production"
+      end
+    end
+    on roles(:web) do
+      within release_path do
+        puts "Removing current production assets"
+        execute :rm, "web/app/themes/#{fetch(:application)}/dist -rf"
+        puts "Uploading new production assets"
+        upload! "#{File.expand_path File.dirname(__FILE__)}/../web/app/themes/#{fetch(:application)}/dist/", "#{release_path}/web/app/themes/#{fetch(:application)}", :recursive => true
+      end
+    end
+  end
+end
+
+after 'deploy:finishing', 'build_assets:push'
+
 namespace :uploads do
   desc "Pull the remote uploaded files"
   task :pull do

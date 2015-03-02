@@ -7,6 +7,7 @@
   "wpdefaultuser": "booncon",
   "wpdefaultpw": "booncon",
   "howtolink" : "https://github.com/booncon/boonbox/blob/master/README.md",
+  "themerepo" : "https://github.com/booncon/sage.git",
   "dirname" : "/www/sites/",
   "themeroot": "/web/app/themes/",
   "tld" : "dev",

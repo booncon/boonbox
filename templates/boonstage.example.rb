@@ -1,4 +1,4 @@
-set :stage, :staging
+set :stage, :boonstage
 
 set :user, 'bc-grunt'
 
