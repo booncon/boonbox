@@ -34,7 +34,7 @@ if [ -f Gemfile ]; then
   fi  
 
   # install the bundle and create on staging
-  bundle exec cap staging deploy:setup
+  bundle exec cap boonstage deploy:setup
 
   echo 'The projects has been set up on staging :)'
   exit 0
