@@ -85,16 +85,15 @@ EOF
   wp theme activate $name
   wp option set permalink_structure /%postname%/
 
-  # runs and npm install
-  $scriptdir/npm.sh $name
+  # # runs and npm install
+  # $scriptdir/npm.sh $name
 
-  # building the production asset files
-  cd $themeroot$name
-  npm cache clean
-  npm install
-  bower install
-  gulp
-  echo 'assets build successful'
+  # # building the production asset files
+  # cd $themeroot$name
+  # npm install
+  # bower install
+  # gulp
+  # echo 'assets build successful'
 
   cd $sitesdir$name
 
