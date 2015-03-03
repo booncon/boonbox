@@ -95,6 +95,11 @@ namespace :db do
   end
   desc "Push the local database to remote"
   task :push do
+    run_locally do
+      with path: "$(pwd)/vendor/wp-cli/wp-cli/bin:/usr/local/bin:$PATH" do
+        execute :wp, "db export example-project.sql --path=web/wp"
+      end
+    end
     on roles(:web) do
       within release_path do
         with path: "#{fetch(:release_path)}vendor/wp-cli/wp-cli/bin:$PATH" do
@@ -130,9 +135,6 @@ namespace :deploy do
       dbpasw = capture "echo $(awk /DB_PASSWORD/ #{File.expand_path File.dirname(__FILE__)}/../.env)"
       dbpasw = dbpasw.split('=')[1]
       info "#{dbpasw}"
-      with path: "$(pwd)/vendor/wp-cli/wp-cli/bin:/usr/local/bin:$PATH" do
-        execute :wp, "db export example-project.sql --path=web/wp"
-      end
     end
     on roles(:web) do
       info "#{dbpasw}"

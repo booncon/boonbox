@@ -128,7 +128,7 @@
 							}
 							echo '    <li role="presentation"><a role="menuitem" tabindex="-1" href="http://' . $project . '.' . $config['tld'] . '.' . $this_ip . '.xip.io"><span class="dropdown-icon glyphicon glyphicon-flash"></span>xip.io link</a></li>';
 							if ($config['showactions']) {
-								$exists_on_stage = url_exists('http://' . $project . '.stage.bcon.io');
+								$exists_on_stage = true;  //url_exists('http://' . $project . '.stage.bcon.io');
 								if ($is_online && $exists_on_stage) {
 									echo '    <li role="presentation"><a role="menuitem" tabindex="-1" href="http://' . $project . '.stage.bcon.io"><span class="dropdown-icon glyphicon glyphicon-share"></span>Staging link</a></li>';
 								}

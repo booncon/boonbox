@@ -33,8 +33,8 @@ if [ -f Gemfile ]; then
     exit 2
   fi  
 
-  # install the bundle and create on staging
-  bundle exec cap boonstage deploy:setup
+  # create on staging (with capistrano)
+  cap boonstage deploy:setup
 
   echo 'The projects has been set up on staging :)'
   exit 0

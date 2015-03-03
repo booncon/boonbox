@@ -15,7 +15,7 @@ sitesdir=$(php -r "\$config = json_decode(utf8_encode(file_get_contents('config.
 cd $sitesdir
 
 if [ -d "$project" ]; then
-  # set up database & import content from staging
+  # remove database & user & directory
   mysql -uroot -p$rootpw -e "drop database \`$project\`;"
   mysql -uroot -p$rootpw -e "REVOKE ALL PRIVILEGES, GRANT OPTION FROM \`$project\`;"
   mysql -uroot -p$rootpw -e "drop user \`$project\`@'%';"
