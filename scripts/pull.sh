@@ -29,8 +29,8 @@ fi
 if [ -f Gemfile ]; then
   # fetch file and database from staging
   bundle install
-  bundle exec cap staging uploads:pull
-  bundle exec cap staging db:pull
+  bundle exec cap boonstage uploads:pull
+  bundle exec cap boonstage db:pull
 
   # add possible project wp-cli and global wp to the path
   PATH=$(pwd)/vendor/wp-cli/wp-cli/bin:/usr/local/bin:$PATH
