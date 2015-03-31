@@ -67,6 +67,47 @@ end
 
 after 'deploy:finishing', 'build_assets:push'
 
+namespace :cache do
+  desc "Clear the w3tc & APCu cache"
+  task :clear do
+    on roles(:web) do
+      begin
+        within release_path do
+          with path: "#{release_path}vendor/wp-cli/wp-cli/bin:$PATH" do
+            begin
+              if :wp then
+                info("Clearing the w3tc cache")
+                execute :wp, "w3-total-cache flush page"
+                execute :wp, "w3-total-cache flush db"
+                execute :wp, "w3-total-cache flush object"
+                info("Clearing the APCu cache (if enabled)")
+                app_url = capture(:wp, "option get home")
+                contents = %Q[
+                  <?php
+                    if (function_exists('apc_clear_cache')) {
+                      apc_clear_cache();
+                      apc_clear_cache('user');
+                      apc_clear_cache('opcode');
+                    }
+                ]
+                filepath = "#{release_path}/web/apc_clear.php";
+                upload! StringIO.new(contents), filepath
+                execute :chmod, '644', filepath
+                execute :curl, '--silent', "#{app_url}/apc_clear.php"
+                execute :wp, "w3-total-cache flush browser"
+              end  
+            ensure  
+              execute :rm, '-f', filepath
+            end
+          end  
+        end
+      end
+    end
+  end
+end
+
+after 'deploy:finished', 'cache:clear'
+
 namespace :uploads do
   desc "Pull the remote uploaded files"
   task :pull do
