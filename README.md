@@ -115,6 +115,15 @@ Change the virtual hosts config
 Install RVM with stable Ruby:
 `\curl -sSL https://get.rvm.io | bash -s stable —ruby`
 
+Install node & npm:
+`insttructions will follow`
+
+Install bower:
+`npm install bower -g`
+
+Install gulp:
+`npm install gulp -g`
+
 Install composer:
 ```
 brew tap homebrew/php
