@@ -22,7 +22,6 @@ Install and configure dnsmasq to intercept all .dev domains
 ```
 brew install dnsmasq
 cd $(brew --prefix)
-mkdir etc
 echo 'address=/.dev/127.0.0.1' > etc/dnsmasq.conf
 sudo cp -v $(brew --prefix dnsmasq)/homebrew.mxcl.dnsmasq.plist /Library/LaunchDaemons
 sudo launchctl load -w /Library/LaunchDaemons/homebrew.mxcl.dnsmasq.plist
@@ -33,24 +32,25 @@ sudo bash -c 'echo "nameserver 127.0.0.1" > /etc/resolver/dev'
 
 Set up your local development folders
 ```
-mkdir /www
-mkdir /www/home
+sudo mkdir -p /www/home
+sudo chown -R USER:GROUP /www
 mkdir /www/sites
 cd /www/home/
 git clone https://github.com/booncon/boonbox.git web
 cd web
-cp config.sample.json config.json //adapt the settings
+cp config.sample.json config.json
+atom config.json //adapt the settings
 ```
 
 
 Create a php.ini file and change some values
 ```
-cp /etc/php.ini.default /etc/php.ini
+sudo cp /etc/php.ini.default /etc/php.ini
+sudo atom /etc/php.ini
 post_max_size = 256M
 upload_max_filesize = 256M
 display_startup_errors = On
 display_errors = On
-log_errors = On
 ```
 
 
@@ -59,8 +59,8 @@ Start Apache and visit http://home.dev
 
 
 Change some lines in the Apache config
+`sudo atom /private/etc/apache2/httpd.conf`
 ```
-nano /private/etc/apache2/httpd.conf
 LoadModule php5_module libexec/apache2/libphp5.so
 LoadModule rewrite_module libexec/apache2/mod_rewrite.so
 LoadModule vhost_alias_module libexec/apache2/mod_vhost_alias.so
@@ -82,9 +82,9 @@ Include /private/etc/apache2/extra/httpd-vhosts.conf
 
 
 Change the virtual hosts config
-```
-nano /private/etc/apache2/extra/httpd-vhosts.conf
 
+`sudo atom /private/etc/apache2/extra/httpd-vhosts.conf`
+```
 <Directory "/www">
   Options Indexes MultiViews FollowSymLinks
   AllowOverride All
@@ -112,6 +112,26 @@ nano /private/etc/apache2/extra/httpd-vhosts.conf
 </Virtualhost>
 ```
 
+Install RVM with stable Ruby:
+`\curl -sSL https://get.rvm.io | bash -s stable —ruby`
+
+Install node & npm:
+`insttructions will follow`
+
+Install bower:
+`npm install bower -g`
+
+Install gulp:
+`npm install gulp -g`
+
+Install composer:
+```
+brew tap homebrew/php
+brew install composer
+```
+
+Install wp-cli:
+`brew install wp-cli`
 
 Restart apache & reload http://home.dev/test.php & make sure eveything is green :)
 `sudo apachectl restart`
