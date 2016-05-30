@@ -106,7 +106,7 @@ var createProject = function () {
       data: { create: $('#projectName').val() }
     }).success(function (response) {
       console.log(response);
-      reloadProjects(showAlert('success', '<strong>Success!</strong> You have created the project "' + projectName + '". Don\'t forget to run <pre>cd /www/sites/' + projectName + '/web/app/themes/' + projectName + ' && npm install && bower install && gulp && gulp watch</pre> & add this to staging <pre>cd /www/sites/' + projectName + ' && git push -u origin master && cap boonstage deploy:setup</pre>(create an empty github repository with the projects name and add bc-grunt to the contributors)'), projectName);
+      reloadProjects(showAlert('success', '<strong>Success!</strong> You have created the project "' + projectName + '". Don\'t forget to run <pre>cd /www/sites/' + projectName + '/web/app/themes/' + projectName + ' && bundle && npm install && bower install && gulp && gulp watch</pre> & add this to staging <pre>cd /www/sites/' + projectName + ' && git push -u origin master && cap boonstage deploy:setup</pre>(create an empty github repository with the projects name and add bc-grunt to the contributors)'), projectName);
     }).error(function (response) {
       console.log(response);
       $('#addProjectFormAlertWrap').html(showAlert('danger', '<strong>Error!</strong> ' + response.responseText));

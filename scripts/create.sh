@@ -56,23 +56,20 @@ EOF
   echo -e $themeInfo > $themeroot$name/style.css
   echo "theme style.css written"
 
-  # Overwrite the deploy scripts
-  # cp $scriptdir/../templates/README.example.md $sitesdir$name/README.md
-  cp $scriptdir/../templates/deploy.example.rb $sitesdir$name/config/deploy.rb
-  cp $scriptdir/../templates/boonstage.example.rb $sitesdir$name/config/deploy/boonstage.rb
+  # Fetch the deploy scripts from github
+  cd $sitesdir$name
+  git clone git@github.com:booncon/px-wp-cap-deploy.git capper
+  cd capper
+  rm -rf *.md
+  cp -R * ../
+  cd ..
+  rm -rf capper
 
   # search and replace in the files: example_project -> project name
   sed -i '' 's/example-project/'$name'/g' $sitesdir$name/config/deploy.rb
   #sed -i '' 's/example-project/'$name'/g' $sitesdir$name/README.md
 
   sed -i '' 's/example.dev/'$name'.dev/g' $themeroot$name/assets/manifest.json 
-
-  # fix stupid roots gitignore
-  # sed -i '' 's/\*main\*/main/g' $sitesdir$name/$themeroot$name/.gitignore
-  # sed -i '' 's/\*scripts\*/scripts/g' $sitesdir$name/$themeroot$name/.gitignore
-  # sed -i '' '/modernizr/d' $sitesdir$name/$themeroot$name/.gitignore
-
-  # sed -i '' 's/sourcemap: true/sourcemap: false/g' $sitesdir$name/$themeroot$name/Gruntfile.js
 
   # calling the script to set up the db and .env
   $scriptdir/env.sh $name
